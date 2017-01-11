@@ -13,3 +13,46 @@
 .statusbar-overlay {
     background: #000000;
 }
+
+
+#itCiclo, #itMat{
+  
+  border: 1px solid #2196f3;
+  color: white;
+  margin-bottom: 6px;
+  background: #2196f3;
+}
+
+
+#mat{
+  border-style: solid;
+  border-color: #A4A4A4;
+  
+  border-width: 0px 0px 0.2px 0px;
+  color: black;
+  
+  background: white;
+}
+#folder{
+  background: #E6E6E6;
+  border-style: solid;
+  border-color: #A4A4A4;
+  
+  border-width: 0px 0px 0.2px 0px;
+}
+
+
+#nombMateria{
+  font-size: 80%;
+}
+
+.page-content{
+	background-color: white;
+}
+
+
+/* label underline focus color */
+.modal-text-input[type=text]:focus {
+     border-bottom: 1px solid #2196f3;
+     box-shadow: 0 1px 0 0 #2196f3;
+   }
