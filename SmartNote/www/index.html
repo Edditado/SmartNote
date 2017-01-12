@@ -27,10 +27,18 @@
               </div>
             </div>
             <div class="page-content">
-              <div class="list-block">
+              <div class="list-block inset">
                 <ul>
                   <li>
-                    <a id="op" href="ciclos.html" class="item-link item-content">
+                    <a href="index.html" class="item-link item-content">
+                      <div class="item-media"><i class="material-icons">schedule</i></div>
+                      <div class="item-inner">
+                        <div class="item-title">Reciente</div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="ciclos.html" class="item-link item-content">
                       <div class="item-media"><i class="material-icons">&#xE02F;</i></div>
                       <div class="item-inner">
                         <div class="item-title">Ciclos</div>
@@ -38,7 +46,7 @@
                     </a>
                   </li>
                   <li>
-                    <a id="op" href="recordatorios.html" class="item-link item-content">
+                    <a href="recordatorios.html" class="item-link item-content">
                       <div class="item-media"><i class="material-icons">notifications</i></div>
                       <div class="item-inner">
                         <div class="item-title">Recordatorios</div>
@@ -47,7 +55,7 @@
                   </li>
                   
                   <li>
-                    <a id="op" href="materia.html" class="item-link item-content">
+                    <a href="materia.html" class="item-link item-content">
                       <div class="item-media"><i class="material-icons">settings</i></div>
                       <div class="item-inner">
                         <div class="item-title">Ajustes</div>
@@ -63,18 +71,18 @@
     </div>
 
     <div class="views">
-      <div class="view view-main navbar-fixed toolbar-fixed">
-        <div class="pages">
+      <div class="view view-main">
+        <div class="pages navbar-fixed">
           <div class="page" data-page="index">
 
             <div class="navbar">
               <div class="navbar-inner">
                 <div class="left">
                   <a href="#" class="link icon-only open-panel">
-                    <i class="material-icons">menu</i>
+                    <i class="icon icon-bars"></i>
                   </a>
                 </div>
-                <div>Ciclos</div>
+                <div>Reciente</div>
                 <div class="right">
                   <a href="#" class="link icon-only">
                     <i class="material-icons">search</i>
@@ -86,18 +94,63 @@
               </div>
             </div>
 
-            <!--<a href="ciclo_nuevo.html" class="floating-button">-->
-            <a id="new_ciclo" class="floating-button">
-              <i class="icon icon-plus"></i>
-            </a>
- 
-            <div class="page-content">
-              <div class="content-block">
-                  
+            <div class="page-content"> 
+              <div class="list-block">
+                <div class="list-group">
+                  <ul>
+                    <li class="list-group-title">Hoy</li>
+                    <li id="mat" class="item-content">
+                      <div class="item-media"><i class="material-icons">&#xE06F;</i></div>
+                      <div class="item-inner">
+                        <div class="item-title">Apuntes de la primera clase</div>
+                      </div>
+                    </li>
+                    <li id="mat" class="item-content">
+                      <div class="item-media"><i class="material-icons">&#xE030;</i></div>
+                      <div class="item-inner">
+                        <div class="item-title">Audio 1</div>
+                      </div>
+                    </li>                
+                    <li id="mat" class="item-content">
+                      <div class="item-media"><img src="img/ap1.jpg" width="25"></div>
+                      <div class="item-inner">
+                        <div class="item-title">Img-001</div>
+                      </div>
+                    </li>
+                  </ul>
+                </div> 
+                <div class="list-group">
+                  <ul>
+                    <li class="list-group-title">Lunes</li>
+                    <li id="mat" class="item-content">
+                      <div class="item-media"><img src="img/ap2.jpg" width="25"></div>
+                      <div class="item-inner">
+                        <div class="item-title">Img-002</div>
+                      </div>
+                    </li>
+                    <li id="mat" class="item-content">
+                      <div class="item-media"><img src="img/ap3.jpg" width="25"></div>
+                      <div class="item-inner">
+                        <div class="item-title">Img-003</div>
+                      </div>
+                    </li>               
+                  </ul> 
+                </div>
               </div>
             </div>
 
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popover popover-menu">
+      <div class="popover-inner">
+        <div class="list-block">
+          <ul>
+            <li><a href="#" class="list-button item-link">Cambiar nombre</a></li>
+            <li><a href="#" class="list-button item-link">Eliminar</a></li>
+          </ul>
         </div>
       </div>
     </div>
@@ -106,61 +159,3 @@
     <script type="text/javascript" src="js/app.js"></script>
   </body>
 </html>
-
-<!--<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-
-    <title>SmartNote</title>
-  
-    <link rel="stylesheet" href="lib/framework7/css/framework7.material.min.css">
-    <link rel="stylesheet" href="lib/framework7/css/framework7.material.colors.min.css">
-    <link rel="stylesheet" href="css/index.css"/>
-
-    <script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script> 
-    <script src="js/index.js"></script>
-  </head>
-
-  <body>
-    <nav>     
-      <div class="nav-wrapper">
-        <ul class="left">
-          <li><a href="#" id="btn_menu" data-activates="menu"><i class="material-icons">menu</i></a></li>
-        </ul>
-        
-        <a id="title"></a>
-
-        <ul id="menu" class="side-nav">
-          <li>
-            <div class="userView">
-              <div class="background">
-                <img src="images/humo-negro.jpg" />
-              </div>
-              <a href="#"><img class="circle" src="images/ironManFace.jpg"/></a>
-              <a href="#"><span class="white-text name">Usuario</span></a>
-              <a href="#"><span class="white-text email">usuario@mail.com</span></a>
-            </div>
-          </li>
-          <li id="ciclos"><a href="#"><i class="material-icons">library_books</i>Mis Ciclos</a></li>
-          <li id="recordatorios"><a href="#"><i class="material-icons">schedule</i>Recordatorios</a></li>
-          <li><div class="divider"></div></li>
-          <li id="ajustes"><a href="#"><i class="material-icons">settings</i>Ajustes</a></li>
-        </ul>
-
-        <ul class="right">
-          <li><a href="#"><i class="material-icons">search</i></a></li>
-          <li><a href="#"><i class="material-icons">view_module</i></a></li>
-        </ul>
-      </div>          
-    </nav>
-
-
-    <div id='content' class="container">
-
-    </div>
-    
-  </body>
-</html>-->

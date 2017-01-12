@@ -15,14 +15,25 @@
 }
 
 
-#itCiclo, #itMat{
+/*#itCiclo, #itMat{
   
   border: 1px solid #2196f3;
   color: white;
   margin-bottom: 6px;
   background: #2196f3;
+}*/
+
+.item-inner {
+    background-image: none !important;
 }
 
+.popover {
+  width: 200px;
+}
+
+li i {
+  color: initial;
+}
 
 #mat{
   border-style: solid;
