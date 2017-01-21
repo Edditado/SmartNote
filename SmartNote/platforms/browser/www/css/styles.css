@@ -27,6 +27,10 @@
     background-image: none !important;
 }
 
+.page-content {
+    padding-top: 0 !important;
+}
+
 .popover {
   width: 200px;
 }
@@ -35,7 +39,7 @@ li i {
   color: initial;
 }
 
-#mat{
+/*#mat{
   border-style: solid;
   border-color: #A4A4A4;
   
@@ -43,7 +47,7 @@ li i {
   color: black;
   
   background: white;
-}
+}*/
 #folder{
   background: #E6E6E6;
   border-style: solid;
@@ -61,6 +65,14 @@ li i {
 	background-color: white;
 }
 
+.list-block.inset{
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.view-menu .list-block .item-inner:after{
+  height: 0;
+}
 
 /* label underline focus color */
 .modal-text-input[type=text]:focus {

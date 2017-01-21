@@ -18,14 +18,17 @@
     <div class="panel-overlay"></div>
 
     <div class="panel panel-left panel-cover">
-      <div class="view navbar-fixed">
+      <div class="view view-menu navbar-fixed">
         <div class="pages">
           <div class="page" data-page='menu'>
-            <div class="navbar">
-              <div class="navbar-inner">
-                <div class="center">Menu</div>
+            <div>
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="center">Menu</div>
+                </div>
               </div>
             </div>
+            
             <div class="page-content">
               <div class="list-block inset">
                 <ul>
@@ -73,66 +76,89 @@
     <div class="views">
       <div class="view view-main">
         <div class="pages navbar-fixed">
+          
           <div class="page" data-page="index">
 
-            <div class="navbar">
-              <div class="navbar-inner">
-                <div class="left">
-                  <a href="#" class="link icon-only open-panel">
-                    <i class="icon icon-bars"></i>
-                  </a>
+            <div class="custom-accordion">
+              <div class="accordion-item">
+                <div class="navbar">
+                  <div class="navbar-inner">
+                    <div class="left">
+                      <a href="#" class="link icon-only open-panel">
+                        <i class="icon icon-bars"></i>
+                      </a>
+                    </div>
+                    <div>Reciente</div>
+                    <div class="right">
+                      <a id="btnSearch" href="#" class="link icon-only accordion-item-toggle">
+                        <i class="material-icons">search</i>
+                      </a>
+                      <a href="#" class="link icon-only">
+                        <i class="material-icons">&#xE8F0;</i>
+                      </a>
+                    </div>
+                  </div>           
                 </div>
-                <div>Reciente</div>
-                <div class="right">
-                  <a href="#" class="link icon-only">
-                    <i class="material-icons">search</i>
-                  </a>
-                  <a href="#" class="link icon-only">
-                    <i class="material-icons">&#xE8F0;</i>
-                  </a>
+
+                <div class="accordion-item-content">
+                  <form data-search-list=".search-here" data-search-in=".item-title" class="searchbar searchbar-init">
+                    <div class="searchbar-input">
+                      <input type="search" placeholder="Buscar"/><a href="#" class="searchbar-clear"></a>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
 
             <div class="page-content"> 
-              <div class="list-block">
+              <div class="list-block search-here">
                 <div class="list-group">
                   <ul>
                     <li class="list-group-title">Hoy</li>
-                    <li id="mat" class="item-content">
-                      <div class="item-media"><i class="material-icons">&#xE06F;</i></div>
-                      <div class="item-inner">
-                        <div class="item-title">Apuntes de la primera clase</div>
-                      </div>
+                    <li>
+                      <a href="#" class="item-link item-content">
+                        <div class="item-media"><i class="material-icons">&#xE06F;</i></div>
+                        <div class="item-inner">
+                          <div class="item-title">Apuntes de la primera clase</div>
+                        </div>
+                      </a>
                     </li>
-                    <li id="mat" class="item-content">
-                      <div class="item-media"><i class="material-icons">&#xE030;</i></div>
-                      <div class="item-inner">
-                        <div class="item-title">Audio 1</div>
-                      </div>
+                    <li>
+                      <a href="#" class="item-link item-content">
+                        <div class="item-media"><i class="material-icons">&#xE030;</i></div>
+                        <div class="item-inner">
+                          <div class="item-title">Audio 1</div>
+                        </div>
+                      </a>
                     </li>                
-                    <li id="mat" class="item-content">
-                      <div class="item-media"><img src="img/ap1.jpg" width="25"></div>
-                      <div class="item-inner">
-                        <div class="item-title">Img-001</div>
-                      </div>
+                    <li>
+                      <a href="#" class="item-link item-content">
+                        <div class="item-media"><img src="img/ap1.jpg" width="25"></div>
+                        <div class="item-inner">
+                          <div class="item-title">Img-001</div>
+                        </div>
+                      </a>
                     </li>
                   </ul>
                 </div> 
                 <div class="list-group">
                   <ul>
                     <li class="list-group-title">Lunes</li>
-                    <li id="mat" class="item-content">
-                      <div class="item-media"><img src="img/ap2.jpg" width="25"></div>
-                      <div class="item-inner">
-                        <div class="item-title">Img-002</div>
-                      </div>
+                    <li>
+                      <a href="#" class="item-link item-content">
+                        <div class="item-media"><img src="img/ap2.jpg" width="25"></div>
+                        <div class="item-inner">
+                          <div class="item-title">Img-002</div>
+                        </div>
+                      </a>
                     </li>
-                    <li id="mat" class="item-content">
-                      <div class="item-media"><img src="img/ap3.jpg" width="25"></div>
-                      <div class="item-inner">
-                        <div class="item-title">Img-003</div>
-                      </div>
+                    <li>
+                      <a href="#" class="item-link item-content">
+                        <div class="item-media"><img src="img/ap3.jpg" width="25"></div>
+                        <div class="item-inner">
+                          <div class="item-title">Img-003</div>
+                        </div>
+                      </a>
                     </li>               
                   </ul> 
                 </div>

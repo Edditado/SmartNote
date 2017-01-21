@@ -12,8 +12,19 @@ $$('a').on('click', function (e) { //Close panel when you open a new page
   myApp.closePanel();
 });
 
+// $$('#btnSearch').on('click', function (e) { //Close panel when you open a new page
+//   var state = $$('.searchbar').css('display');
+//   if(state == 'none'){
+//     $$('.searchbar').show();
+//   }
+//   else{
+//     $$('.searchbar').hide();
+//   }
+// });
 
 myApp.onPageInit('ciclos', function (page) {
+  var ciclos = localStorage.getItem('ciclos');
+  console.log(ciclos);
 
   $$('#new_ciclo').on('click', function () {   
     myApp.modal({
