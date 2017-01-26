@@ -8,6 +8,8 @@ var $$ = Dom7;
 
 var mainView = myApp.addView('.view-main');
 
+
+
 $$('a').on('click', function (e) { //Close panel when you open a new page
   myApp.closePanel();
 });
@@ -21,6 +23,136 @@ $$('a').on('click', function (e) { //Close panel when you open a new page
 //     $$('.searchbar').hide();
 //   }
 // });
+
+
+myApp.onPageInit('NuevopendienteMateria', function (page) {
+ 
+  /*var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August' , 'September' , 'October', 'November', 'December'];
+ 
+  var calendarInline = myApp.calendar({
+      container: '#calendar-inline-container',
+      value: [new Date()],
+      weekHeader: false,
+      dateFormat: 'dd/mm/yyyy',
+      toolbarTemplate: 
+          '<div class="toolbar calendar-custom-toolbar">' +
+              '<div class="toolbar-inner">' +
+                  '<div class="left">' +
+                      '<a href="#" class="link icon-only"><i class="icon icon-back"></i></a>' +
+                  '</div>' +
+                  '<div class="center"></div>' +
+                  '<div class="right">' +
+                      '<a href="#" class="link icon-only"><i class="icon icon-forward"></i></a>' +
+                  '</div>' +
+              '</div>' +
+          '</div>',
+      onOpen: function (p) {
+          $$('.calendar-custom-toolbar .center').text(monthNames[p.currentMonth] +', ' + p.currentYear);
+          $$('.calendar-custom-toolbar .left .link').on('click', function () {
+              calendarInline.prevMonth();
+          });
+          $$('.calendar-custom-toolbar .right .link').on('click', function () {
+              calendarInline.nextMonth();
+          });
+      },
+      onMonthYearChangeStart: function (p) {
+          $$('.calendar-custom-toolbar .center').text(monthNames[p.currentMonth] +', ' + p.currentYear);
+      }
+});    
+*/
+
+
+$$('#saveAct').on('click', function () { 
+    myApp.confirm('Guardar Actividad?', function () {
+        mainView.router.loadPage('pendientesMat.html');
+    });
+});
+   
+  
+
+
+$$('#buttAlarm').on('click', function () { 
+
+  
+   var ele = document.getElementById('hora');
+  
+  if(ele.style.visibility== 'hidden'){
+
+   ele.style.visibility= 'visible';
+   }
+   else{
+    ele.style.visibility= 'hidden';
+  }
+
+});
+
+
+
+var today = new Date();
+ 
+var pickerInline = myApp.picker({
+    input: '#picker-date',
+    container: '#picker-date-container',
+    toolbar: false,
+    rotateEffect: true,
+    
+    value: [today.getHours(), (today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes())],
+ 
+ 
+    formatValue: function (p, values, displayValues) {
+        return values[0] + ':' + values[1];
+    },
+ 
+    cols: [
+        
+        // Space divider
+        {
+            divider: true,
+            content: '  '
+        },
+        // Hours
+        {
+            values: (function () {
+                var arr = [];
+                for (var i = 0; i <= 23; i++) { arr.push(i); }
+                return arr;
+            })(),
+        },
+        // Divider
+        {
+            divider: true,
+            content: ':'
+        },
+        // Minutes
+        {
+            values: (function () {
+                var arr = [];
+                for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
+                return arr;
+            })(),
+        }
+    ]
+});          
+
+
+
+
+});
+
+
+
+
+
+
+myApp.onPageInit('pendientesMateria', function (page) {
+    $$('#new_actividad').on('click', function () { 
+   mainView.router.loadPage('formActPendiente.html');
+});
+});
+
+
+
+
 
 myApp.onPageInit('ciclos', function (page) {
   var ciclos = localStorage.getItem('ciclos');
@@ -40,6 +172,7 @@ myApp.onPageInit('ciclos', function (page) {
           text: 'CREAR',
           onClick: function() {
             var nombCiclo = $$('#nuevoCiclo').val();
+            mainView.router.loadPage('ciclos.html');
           }
         }, 
       ]
@@ -96,7 +229,12 @@ myApp.onPageInit('materia', function (page) {
     });
   });
 
+
+
 });
+
+
+
 
 
 
@@ -123,78 +261,74 @@ myApp.onPageInit('editor', function (page) {
     });
   });
 
-});
 
-myApp.onPageInit('editor', function (page) {
 
-  $$('#bold').on('click', function () {
+    $$('#bold').on('click', function () {
         var ic = document.getElementById('bold');
         var el = document.getElementById('newnote');
           if(el.style.fontWeight == 'normal'){
-          	    ic.style.color='black';
-          		el.style.fontWeight = 'bold';  
+                ic.style.color='black';
+              el.style.fontWeight = 'bold';  
           }else{
-          	    ic.style.color='#6E6E6E';
-          		el.style.fontWeight = 'normal';  
+                ic.style.color='#6E6E6E';
+              el.style.fontWeight = 'normal';  
           }
-			  
+        
   });
 
-});
 
-myApp.onPageInit('editor', function (page) {
-
-  $$('#italic').on('click', function () {
+   $$('#italic').on('click', function () {
         var ic = document.getElementById('italic');
         var el = document.getElementById('newnote');
           if(el.style.fontStyle== 'normal'){
-          	     ic.style.color='black';
-          		el.style.fontStyle= 'italic';
+                 ic.style.color='black';
+              el.style.fontStyle= 'italic';
           }else{
-          	    ic.style.color='#6E6E6E';
-          		el.style.fontStyle= 'normal';
+                ic.style.color='#6E6E6E';
+              el.style.fontStyle= 'normal';
           }
-			        
+              
   });
+  
 
-});
-myApp.onPageInit('editor', function (page) {
-
-  $$('#underl').on('click', function () {
+   $$('#underl').on('click', function () {
         var ic = document.getElementById('underl');
         var el = document.getElementById('newnote');
-        	if(el.style.textDecoration == 'none'){
-        		 ic.style.color='black';
-        		el.style.textDecoration = 'underline'; 
-        	}else{
-        		ic.style.color='#6E6E6E';
-        		el.style.textDecoration = 'none'; 
-        	}
-			      
+          if(el.style.textDecoration == 'none'){
+             ic.style.color='black';
+            el.style.textDecoration = 'underline'; 
+          }else{
+            ic.style.color='#6E6E6E';
+            el.style.textDecoration = 'none'; 
+          }
+            
   });
-
-});
-
-myApp.onPageInit('editor', function (page) {
 
   $$('#sizeText').on('click', function () {
        var ic = document.getElementById('sizeText');
         var el = document.getElementById('newnote');
+
             if(el.style.fontSize == '20px'){
-            	el.style.fontSize = '25px';   
+              ic.style.color='black';
+              el.style.fontSize = '25px';   
             }else if(el.style.fontSize == '25px'){
-            	el.style.fontSize = '30px';
+              ic.style.color='black';
+              el.style.fontSize = '30px';
 
             }
             else if(el.style.fontSize == '30px'){
-            	el.style.fontSize = '15px';
-			}else{
-				el.style.fontSize = '20px';
-			}
+              ic.style.color='black';
+              el.style.fontSize = '15px';
+      }else{
+        el.style.fontSize = '20px';
+        ic.style.color='#6E6E6E';
+      }
 
 
-			     
+           
   });
+
+
 
 });
 
@@ -202,12 +336,13 @@ myApp.onPageInit('editor', function (page) {
 
 
 
-myApp.onPageInit('pendientesMateria', function (page) {
 
-  $$('#new_actividad').on('click', function () {
+myApp.onPageInit('links', function (page) {
+
+  $$('#new_link').on('click', function () {
     myApp.modal({
-      text: '<p style="color:black;font-weight:bold; font-size: 115%" >Nueva Actividad</p>',
-      afterText: '<p>Nombre:</p><input type="text" id="guardaAct" class="modal-text-input" placeholder="Nombre de Actividad" autofocus> <br><p>Fecha:</p> <input type="text" id="guardaFecha" class="modal-text-input" placeholder="dd/mm/yyyy"> ',
+      text: '<p style="color:black;font-weight:bold; text-align: center;font-size: 115%">Nuevo Link</p>',
+      afterText: '<p>Nombre:</p><input type="text" id="guardaLink" class="modal-text-input" value="Link-001" autofocus> <br><p>Url:</p> <input type="text" id="guardaurl" class="modal-text-input" placeholder="Url">  ',
        
       buttons: [
         {
@@ -216,9 +351,9 @@ myApp.onPageInit('pendientesMateria', function (page) {
           }
         }, 
         {
-          text: 'CREAR',
+          text: 'GUARDAR',
           onClick: function() {
-            var nombAct=$$('#guardaAct').val();
+            
 
           }
         }, 
@@ -226,4 +361,10 @@ myApp.onPageInit('pendientesMateria', function (page) {
     });
   });
 
+
+
+
+
 });
+
+
