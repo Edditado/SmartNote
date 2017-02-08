@@ -186,10 +186,31 @@ textarea{
 
 
 
-#pasado .item-title{
-color: red;
+#pasado, #pasadoRec {
+  background: #F1F0E3;
 }
 
-#pasadoRec .item-after{
-color: red;
+#mat a{
+  color: black;
+}
+
+#titulo{
+  font-weight: bold;
+  font-size: 19px;
+  /*border-bottom: 1px solid #F1F0E3;*/
+  box-shadow: 0 1px 0 0 #F1F0E3;
+}
+
+#nota1{
+    text-align: justify;
+    text-justify: inter-word;
+  }
+
+#fot1, #fot2{
+  background: black;
+}
+
+
+.content-block-inner{
+vertical-align:middle;
 }

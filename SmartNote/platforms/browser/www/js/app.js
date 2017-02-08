@@ -8,6 +8,10 @@ var $$ = Dom7;
 
 var mainView = myApp.addView('.view-main');
 
+  
+
+
+
 
 
 $$('a').on('click', function (e) { //Close panel when you open a new page
@@ -23,6 +27,15 @@ $$('a').on('click', function (e) { //Close panel when you open a new page
 //     $$('.searchbar').hide();
 //   }
 // });
+
+
+
+
+
+
+
+
+
 
 
 myApp.onPageInit('NuevopendienteMateria', function (page) {
@@ -234,6 +247,32 @@ myApp.onPageInit('materia', function (page) {
 });
 
 
+myApp.onPageInit('materias', function (page) {
+
+  $$('#newfolder').on('click', function () {
+    myApp.modal({
+      text: '<p style="color:black;font-weight:bold; font-size: 115%" >Nueva Carpeta</p>',
+      afterText: '<input type="text" id="nuevaCarpeta" class="modal-text-input" placeholder="Nombre de carpeta" autofocus>',
+      buttons: [
+        {
+          text: 'CANCELAR',
+          onClick: function() { 
+          }
+        }, 
+        {
+          text: 'CREAR',
+          onClick: function() {
+            var nombCarpeta=$$('#nuevaCarpeta').val();
+          }
+        }, 
+      ]
+    });
+  });
+
+
+
+});
+
 
 
 
@@ -342,7 +381,7 @@ myApp.onPageInit('links', function (page) {
   $$('#new_link').on('click', function () {
     myApp.modal({
       text: '<p style="color:black;font-weight:bold; text-align: center;font-size: 115%">Nuevo Link</p>',
-      afterText: '<p>Nombre:</p><input type="text" id="guardaLink" class="modal-text-input" value="Link-001" autofocus> <br><p>Url:</p> <input type="text" id="guardaurl" class="modal-text-input" placeholder="Url">  ',
+      afterText: '<p>Nombre:</p><input type="text" id="guardaLink" class="modal-text-input" value="Link-001" autofocus> <br><p>Url:</p> <input type="text" id="guardaurl" class="modal-text-input" >  ',
        
       buttons: [
         {
@@ -361,10 +400,75 @@ myApp.onPageInit('links', function (page) {
     });
   });
 
-
-
-
-
 });
 
 
+
+
+
+myApp.onPageInit('materia', function (page) {
+
+    var destinationType=navigator.camera.DestinationType;
+    
+                        
+         
+      $$('#camara').on('click', function () {
+
+                 navigator.camera.getPicture(onSuccess, onFail, {
+                 quality: 50, saveToPhotoAlbum:1, correctOrientation: true,
+                 destinationType: Camera.DestinationType.FILE_URI });
+
+                  function onSuccess(imageURI) {
+                        
+                        verIMG(imageURI);
+                 }
+                  
+
+                  function onFail(message) {
+                       alert('Error: ' + message);
+                  }
+
+
+                  function verIMG(imageURI){
+                        var uri;
+                        var name;
+                        uri = imageURI.split('/');
+                        name = uri[uri.length-1];
+                       // $$('#campic').attr('src',imageURI);
+                        var newPageContent = '<div  class="page" data-page="fotocam">' +
+                                                '<div id="fot1" class="navbar">'+
+                                                    '<div class="navbar-inner">'+
+                                                      '<div class="left">'+
+                                                        '<a href="materia.html" class="back link icon-only">'+
+                                                          '<i class="icon icon-back"></i>'+
+                                                        '</a>'+
+                                                      '</div>'+
+                                                      '<div style="font-size: 80%">'+name+'</div>'+
+                                                      '<div class="right">'+
+                                                         '<i class="material-icons">&#xE5D4;</i>'+
+                                                        
+                                                      '</div>'+
+                                                    '</div>'+           
+                                                  '</div>'+
+                                                '<div id="fot2" class="page-content"> ' +
+                                                  '<div class="content-block">' +
+                                                    '<div class="content-block-inner">' +
+                                                      '<p>' +
+                                                        '<br>' +
+                                                        '<img id="campic" src='+imageURI+' width="100%" height="200%">' +
+                                                      '</p>' +
+                                                    '</div>' +
+                                                  '</div>' +
+                                                '</div>' +
+                                            '</div>';
+                        
+                         mainView.router.loadContent(newPageContent);
+                        
+                  }
+
+          
+
+             });
+           
+
+});
