@@ -164,38 +164,34 @@ myApp.onPageInit('pendientesMateria', function (page) {
 });
 
 
-
-
-
-myApp.onPageInit('ciclos', function (page) {
-  var ciclos = localStorage.getItem('ciclos');
-  console.log(ciclos);
-
-  $$('#new_ciclo').on('click', function () {   
-    myApp.modal({
-      text: '<p style="color:black;font-weight:bold; font-size: 115%" >Nuevo Ciclo</p>',
-      afterText: '<input type="text" id="nuevoCiclo" class="modal-text-input" placeholder="Nombre" autofocus>',
-      buttons: [
-        {
-          text: 'CANCELAR',
-          onClick: function(){
-          }
-        }, 
-        {
-          text: 'CREAR',
-          onClick: function() {
-            var nombCiclo = $$('#nuevoCiclo').val();
-            mainView.router.loadPage('ciclos.html');
-          }
-        }, 
-      ]
-    });
-  });
-
-});
-
-
 myApp.onPageInit('materias', function (page) {
+
+  if( localStorage.getItem('materias') ){
+    var materias = JSON.parse( localStorage.getItem('materias') );
+    for(var i=0; i < materias.length; i++){ 
+      $$('#listaMaterias ul').append(
+        "<li>\
+          <div class='row no-gutter'>\
+            <div class='col-90'>\
+              <a href='materia.html' id='itMat' class='item-link item-content'>\
+                <div class='item-media'><i class='material-icons'>&#xE2C7;</i></div>\
+                <div class='item-inner'>\
+                  <div class='item-title-row'>\
+                    <div id='nombMateria' class='item-title'>"+materias[i].nombre+"</div>\
+                  </div>\
+                </div>\
+              </a>\
+            </div>\
+            <div class='col-10'>\
+              <a href='#'' class='link icon-only item-inner open-popover' data-popover='.popover-menu'>\
+                <i class='material-icons'>&#xE5D4;</i>\
+              </a>\
+            </div>\
+          </div>\
+        </li>"
+      );
+    }
+  }
 
   $$('#new_materia').on('click', function () {
     myApp.modal({
@@ -210,11 +206,45 @@ myApp.onPageInit('materias', function (page) {
         {
           text: 'CREAR',
           onClick: function() {
-            var nombCiclo=$$('#nuevaMat').val();
+            if( $$('#nuevaMat').val() ){
+              if( localStorage.getItem('materias') ){
+                var materias = JSON.parse( localStorage.getItem('materias') );
+              }
+              else{
+                var materias = [];
+              }
+
+              var newMateria = {
+                id: materias.length +1,
+                nombre: $$('#nuevaMat').val()
+              };
+
+              materias.push(newMateria);
+              localStorage.setItem('materias', JSON.stringify(materias) );
+              mainView.router.refreshPage();
+            }
           }
         }, 
       ]
     });
+
+    $$(".modal-button").filter(function() {
+        return $$(this).text() == "CREAR";
+    }).attr('disabled','');
+
+    $$("#nuevaMat").on('keyup', function(){
+      if( $$(this).val() ){
+        $$(".modal-button").filter(function() {
+            return $$(this).text() == "CREAR";
+        }).removeAttr('disabled');
+      }
+      else{
+        $$(".modal-button").filter(function() {
+            return $$(this).text() == "CREAR";
+        }).attr('disabled','');
+      }
+    });
+
   });
 
 });
@@ -243,36 +273,66 @@ myApp.onPageInit('materia', function (page) {
   });
 
 
+  var destinationType=navigator.camera.DestinationType;
 
-});
+  $$('#camara').on('click', function () {
+
+    navigator.camera.getPicture(onSuccess, onFail, {
+    quality: 50, saveToPhotoAlbum:1, correctOrientation: true,
+    destinationType: Camera.DestinationType.FILE_URI });
+
+    function onSuccess(imageURI) {
+      verIMG(imageURI);
+    }
+      
+
+    function onFail(message) {
+      alert('Error: ' + message);
+    }
 
 
-myApp.onPageInit('materias', function (page) {
+    function verIMG(imageURI){
+      var uri;
+      var name;
+      uri = imageURI.split('/');
+      name = uri[uri.length-1];
+     // $$('#campic').attr('src',imageURI);
+      var newPageContent = '<div  class="page" data-page="fotocam">' +
+                              '<div id="fot1" class="navbar">'+
+                                  '<div class="navbar-inner">'+
+                                    '<div class="left">'+
+                                      '<a href="materia.html" class="back link icon-only">'+
+                                        '<i class="icon icon-back"></i>'+
+                                      '</a>'+
+                                    '</div>'+
+                                    '<div style="font-size: 80%">'+name+'</div>'+
+                                    '<div class="right">'+
+                                       '<i class="material-icons">&#xE5D4;</i>'+
+                                      
+                                    '</div>'+
+                                  '</div>'+           
+                                '</div>'+
+                              '<div id="fot2" class="page-content"> ' +
+                                '<div class="content-block">' +
+                                  '<div class="content-block-inner">' +
+                                    '<p>' +
+                                      '<br>' +
+                                      '<img id="campic" src='+imageURI+' width="100%" height="200%">' +
+                                    '</p>' +
+                                  '</div>' +
+                                '</div>' +
+                              '</div>' +
+                          '</div>';
+      
+       mainView.router.loadContent(newPageContent);
+          
+    }
 
-  $$('#newfolder').on('click', function () {
-    myApp.modal({
-      text: '<p style="color:black;font-weight:bold; font-size: 115%" >Nueva Carpeta</p>',
-      afterText: '<input type="text" id="nuevaCarpeta" class="modal-text-input" placeholder="Nombre de carpeta" autofocus>',
-      buttons: [
-        {
-          text: 'CANCELAR',
-          onClick: function() { 
-          }
-        }, 
-        {
-          text: 'CREAR',
-          onClick: function() {
-            var nombCarpeta=$$('#nuevaCarpeta').val();
-          }
-        }, 
-      ]
-    });
   });
 
 
 
 });
-
 
 
 
@@ -403,72 +463,3 @@ myApp.onPageInit('links', function (page) {
 });
 
 
-
-
-
-myApp.onPageInit('materia', function (page) {
-
-    var destinationType=navigator.camera.DestinationType;
-    
-                        
-         
-      $$('#camara').on('click', function () {
-
-                 navigator.camera.getPicture(onSuccess, onFail, {
-                 quality: 50, saveToPhotoAlbum:1, correctOrientation: true,
-                 destinationType: Camera.DestinationType.FILE_URI });
-
-                  function onSuccess(imageURI) {
-                        
-                        verIMG(imageURI);
-                 }
-                  
-
-                  function onFail(message) {
-                       alert('Error: ' + message);
-                  }
-
-
-                  function verIMG(imageURI){
-                        var uri;
-                        var name;
-                        uri = imageURI.split('/');
-                        name = uri[uri.length-1];
-                       // $$('#campic').attr('src',imageURI);
-                        var newPageContent = '<div  class="page" data-page="fotocam">' +
-                                                '<div id="fot1" class="navbar">'+
-                                                    '<div class="navbar-inner">'+
-                                                      '<div class="left">'+
-                                                        '<a href="materia.html" class="back link icon-only">'+
-                                                          '<i class="icon icon-back"></i>'+
-                                                        '</a>'+
-                                                      '</div>'+
-                                                      '<div style="font-size: 80%">'+name+'</div>'+
-                                                      '<div class="right">'+
-                                                         '<i class="material-icons">&#xE5D4;</i>'+
-                                                        
-                                                      '</div>'+
-                                                    '</div>'+           
-                                                  '</div>'+
-                                                '<div id="fot2" class="page-content"> ' +
-                                                  '<div class="content-block">' +
-                                                    '<div class="content-block-inner">' +
-                                                      '<p>' +
-                                                        '<br>' +
-                                                        '<img id="campic" src='+imageURI+' width="100%" height="200%">' +
-                                                      '</p>' +
-                                                    '</div>' +
-                                                  '</div>' +
-                                                '</div>' +
-                                            '</div>';
-                        
-                         mainView.router.loadContent(newPageContent);
-                        
-                  }
-
-          
-
-             });
-           
-
-});
