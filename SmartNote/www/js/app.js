@@ -170,20 +170,20 @@ myApp.onPageInit('materias', function (page) {
     var materias = JSON.parse( localStorage.getItem('materias') );
     for(var i=0; i < materias.length; i++){ 
       $$('#listaMaterias ul').append(
-        "<li>\
+        "<li id='"+materias[i].id+"'>\
           <div class='row no-gutter'>\
             <div class='col-90'>\
-              <a href='materia.html' id='itMat' class='item-link item-content'>\
+              <a href='#' onclick='cargarMateria("+materias[i].id+")' class='item-link item-content'>\
                 <div class='item-media'><i class='material-icons'>&#xE2C7;</i></div>\
                 <div class='item-inner'>\
                   <div class='item-title-row'>\
-                    <div id='nombMateria' class='item-title'>"+materias[i].nombre+"</div>\
+                    <div class='item-title'>"+materias[i].nombre+"</div>\
                   </div>\
                 </div>\
               </a>\
             </div>\
             <div class='col-10'>\
-              <a href='#'' class='link icon-only item-inner open-popover' data-popover='.popover-menu'>\
+              <a href='#' class='link icon-only item-inner options-popover'>\
                 <i class='material-icons'>&#xE5D4;</i>\
               </a>\
             </div>\
@@ -247,7 +247,184 @@ myApp.onPageInit('materias', function (page) {
 
   });
 
+  $$('.options-popover').on('click', function () {
+    var materia_id = $$(this).parents('li').attr('id');
+    var materia_nom = $$(this).parents('li').find('div.item-title').text();
+
+    var popoverHTML = '<div class="popover">'+
+                        '<div class="popover-inner">'+
+                          '<div class="list-block">'+
+                            '<ul>'+
+                              '<li><a href="#" class="item-link list-button close-popover" onclick="editar_materia('+materia_id+',\''+materia_nom+'\')">Cambiar nombre</li>'+
+                              '<li><a href="#" class="item-link list-button close-popover" onclick="eliminar_materia('+materia_id+')">Eliminar</li>'+
+                            '</ul>'+
+                          '</div>'+
+                        '</div>'+
+                      '</div>';
+
+    myApp.popover(popoverHTML, this); 
+  });
+
 });
+
+
+function editar_materia(id, nombre){
+  myApp.modal({
+    text: '<p style="color:black;font-weight:bold; font-size: 115%" >Editar Materia</p>',
+    afterText: '<input id="inputEditar" type="text" class="modal-text-input" placeholder="Nombre" value="'+nombre+'" autofocus>',
+    buttons: [
+      {
+        text: 'CANCELAR',
+        onClick: function() { 
+        }
+      }, 
+      {
+        text: 'GUARDAR',
+        onClick: function() {
+          var materias = JSON.parse( localStorage.getItem('materias') );
+
+          $$.each(materias, function(i, materia){
+            if(materia.id == id){
+              materia.nombre = $$('#inputEditar').val();
+              return false;
+            }
+          });
+
+          localStorage.setItem('materias', JSON.stringify(materias) );
+          mainView.router.refreshPage();
+        }
+      }, 
+    ]
+  });
+
+  $$("#inputEditar").on('keyup', function(){
+    if( $$(this).val() ){
+      $$(".modal-button").filter(function() {
+          return $$(this).text() == "GUARDAR";
+      }).removeAttr('disabled');
+    }
+    else{
+      $$(".modal-button").filter(function() {
+          return $$(this).text() == "GUARDAR";
+      }).attr('disabled','');
+    }
+  });
+}
+
+
+function eliminar_materia(id){
+  myApp.modal({
+    text: '<p style="color:black;font-weight:bold; font-size: 115%" >Eliminar Materia</p>',
+    afterText: '<p>Se perderan todos los elementos de esta materia.</p>',
+    buttons: [
+      {
+        text: 'CANCELAR',
+        onClick: function() { 
+        }
+      }, 
+      {
+        text: 'ELIMINAR',
+        onClick: function() {
+          var materias = JSON.parse( localStorage.getItem('materias') );
+
+          $$.each(materias, function(index, materia){
+            if(materia.id == id){
+              materias.splice(index,1);
+              return false;
+            }
+          });
+
+          localStorage.setItem('materias', JSON.stringify(materias) );
+
+          if( localStorage.getItem('archivos') ){
+            var archivos = JSON.parse( localStorage.getItem('archivos') );
+
+            $$.each(archivos, function(index, archivo){
+              if(archivo.materia_id == id){
+                archivos.splice(index,1);
+              }
+            });
+
+            localStorage.setItem('archivos', JSON.stringify(archivos) );
+          }
+
+          mainView.router.refreshPage();
+        }
+      }, 
+    ]
+  });
+}
+
+
+function cargarMateria(id){
+  var materias = JSON.parse( localStorage.getItem('materias') );
+  var materia = {};
+
+  $$.each(materias, function(index, elemento){
+    if(elemento.id == id){
+      materia = elemento;
+      return false;
+    }
+  });
+
+  myApp.onPageInit('materia', function (page) {
+    $$("#divTitulo").text(materia.nombre);
+
+    if( localStorage.getItem('archivos') ){
+      var archivos = JSON.parse( localStorage.getItem('archivos') );
+
+      $$.each(archivos, function(index, archivo){ 
+
+        if(archivo.materia_id == materia.id){
+          var icono = '';
+
+          switch(archivo.tipo){
+            case 'nota':
+              icono = '&#xE06F;';
+              break;
+            case 'imagen':
+              icono = '&#xE410;';
+              break;
+            case 'audio':
+              icono = '&#xE3A1;';
+              break;
+            case 'video':
+              icono = '&#xE54D;';
+              break;
+            default:
+              icono = '&#xE24D;';
+              break;
+          }
+
+          $$('#listaArchivos ul').append(
+            "<li id='"+archivo.id+"'>\
+              <div class='row no-gutter'>\
+                <div class='col-90'>\
+                  <a href='#' class='item-link item-content'>\
+                    <div class='item-media'><i class='material-icons'>"+icono+"</i></div>\
+                    <div class='item-inner'>\
+                      <div class='item-title-row'>\
+                        <div class='item-title'>"+archivo.nombre+"</div>\
+                      </div>\
+                    </div>\
+                  </a>\
+                </div>\
+                <div class='col-10'>\
+                  <a href='#' class='link icon-only item-inner options-popover'>\
+                    <i class='material-icons'>&#xE5D4;</i>\
+                  </a>\
+                </div>\
+              </div>\
+            </li>"
+          );
+        }
+      });
+    }
+
+  });
+
+  mainView.router.loadPage('materia.html');
+}
 
 
 myApp.onPageInit('materia', function (page) {
