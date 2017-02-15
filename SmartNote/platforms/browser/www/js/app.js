@@ -99,6 +99,11 @@ myApp.onPageInit('materias', function (page) {
 
   });
 
+
+  
+
+
+
   $$('.materia-options').on('click', function () {
     var materia_id = $$(this).parents('li').attr('id');
     var materia_nom = $$(this).parents('li').find('div.item-title').text();
@@ -595,9 +600,11 @@ myApp.onPageInit('editor', function (page) {
 });
 
 
+
 function cargarNota(archivo, refresh){
   var notas = JSON.parse( localStorage.getItem("notas") );
   var nota = {};
+
 
   $$.each(notas, function(i, obj){
     if(obj.archivo_id == archivo.id){
@@ -605,6 +612,7 @@ function cargarNota(archivo, refresh){
       return false;
     }
   });
+
 
   mainView.router.load({
     url: 'note.html',
@@ -616,7 +624,10 @@ function cargarNota(archivo, refresh){
   });
 }
 
+   
+ 
 
+ 
 myApp.onPageInit('note', function (page) {
   $$("#btnEditarNota").on('click', function(){
     $$("#editArea").removeAttr('readonly');
@@ -635,6 +646,7 @@ myApp.onPageInit('note', function (page) {
       $$(this).css('color','black');
     }     
   });
+
 
   $$('#italic').on('click', function () {     
     if( $$("#editArea").css('font-style') == 'italic' ){
@@ -658,6 +670,7 @@ myApp.onPageInit('note', function (page) {
     }               
   });
 
+
   $$('#sizeText').on('click', function () {
     if($$("#editArea").css('font-size') == '20px'){
       $$("#editArea").css('font-size','25px');
@@ -674,6 +687,7 @@ myApp.onPageInit('note', function (page) {
       $$(this).css('color','#6E6E6E'); 
     }            
   });
+
 });
 
 
@@ -809,88 +823,69 @@ function cargarFoto(archivo){
       foto: foto
     }
   });
-
-
-  // var uri;
-  // var name;
-  // uri = imageURI.split('/');
-  // name = uri[uri.length-1];
-  // // $$('#campic').attr('src',imageURI);
-  // var newPageContent = '<div  class="page" data-page="fotocam">' +
-  //                         '<div id="fot1" class="navbar">'+
-  //                             '<div class="navbar-inner">'+
-  //                               '<div class="left">'+
-  //                                 '<a href="materia.html" class="back link icon-only">'+
-  //                                   '<i class="icon icon-back"></i>'+
-  //                                 '</a>'+
-  //                               '</div>'+
-  //                               '<div style="font-size: 80%">'+name+'</div>'+
-  //                               '<div class="right">'+
-  //                                  '<i class="material-icons">&#xE5D4;</i>'+
-                                  
-  //                               '</div>'+
-  //                             '</div>'+           
-  //                           '</div>'+
-  //                         '<div id="fot2" class="page-content"> ' +
-  //                           '<div class="content-block">' +
-  //                             '<div class="content-block-inner">' +
-  //                               '<p>' +
-  //                                 '<br>' +
-  //                                 '<img id="campic" src='+imageURI+' width="100%" height="200%">' +
-  //                               '</p>' +
-  //                             '</div>' +
-  //                           '</div>' +
-  //                         '</div>' +
-  //                     '</div>';
-  
-  //  mainView.router.loadContent(newPageContent);
       
 }
 
 
+
 myApp.onPageInit('NuevopendienteMateria', function (page) {
- 
-  /*var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August' , 'September' , 'October', 'November', 'December'];
- 
-  var calendarInline = myApp.calendar({
-      container: '#calendar-inline-container',
-      value: [new Date()],
-      weekHeader: false,
-      dateFormat: 'dd/mm/yyyy',
-      toolbarTemplate: 
-          '<div class="toolbar calendar-custom-toolbar">' +
-              '<div class="toolbar-inner">' +
-                  '<div class="left">' +
-                      '<a href="#" class="link icon-only"><i class="icon icon-back"></i></a>' +
-                  '</div>' +
-                  '<div class="center"></div>' +
-                  '<div class="right">' +
-                      '<a href="#" class="link icon-only"><i class="icon icon-forward"></i></a>' +
-                  '</div>' +
-              '</div>' +
-          '</div>',
-      onOpen: function (p) {
-          $$('.calendar-custom-toolbar .center').text(monthNames[p.currentMonth] +', ' + p.currentYear);
-          $$('.calendar-custom-toolbar .left .link').on('click', function () {
-              calendarInline.prevMonth();
-          });
-          $$('.calendar-custom-toolbar .right .link').on('click', function () {
-              calendarInline.nextMonth();
-          });
-      },
-      onMonthYearChangeStart: function (p) {
-          $$('.calendar-custom-toolbar .center').text(monthNames[p.currentMonth] +', ' + p.currentYear);
-      }
-});    
-*/
-
-
-$$('#saveAct').on('click', function () { 
-    myApp.confirm('Guardar Actividad?', function () {
-        mainView.router.loadPage('pendientesMat.html');
-    });
-});
    
+
+  $$('#saveAct').on('click', function () {
+  
+    myApp.confirm('Guardar Actividad?', function () {
+
+           var nombAct = $$('#guardaAct').val();
+             var fecha = $$('#guardaFech').val();
+             var horai = $$('#picker-date').val();
+             
+             var hor = horai.split(':');
+             var fecha = fecha.split("/");
+             var d =  new Date(fecha[1]+"/"+fecha[0]+"/"+fecha[2]);
+             var hora="";
+             var minuto="";
+             if(horai!=""){
+                hora=hor[0]; 
+                minuto=hor[1]; 
+             }
+             
+              d.setHours(hora);
+              d.setMinutes(minuto);
+              d.setSeconds("00");
+             
+           plugin.notification.local.registerPermission(function (granted) {
+                        //alert("promptForPermission: "+granted);
+                        
+          });
+                                var now = new Date().getTime(),
+                                              _5_sec_from_now = new Date(now + 5 * 1000);
+
+                                          var sound = device.platform == 'Android' ? 'file://sound.mp3' : 'file://beep.caf';
+                                          
+                                            
+                                           // alert(_5_sec_from_now);
+                                              /*cordova.plugins.notification.local.cancelAll(function() {
+                                                alert("done");
+                                            }, this);*/
+
+                                              cordova.plugins.notification.local.schedule({
+                                                id         : 1,
+                                                title      : 'SmartNote - Robótica',
+                                                text       : nombAct,
+                                                sound      : null,
+                                                autoClear  : false,
+                                                //sound: "file://sound.mp3",
+                                                sound: sound,
+                                                at         :  d
+                                              });
+                                              
+
+
+                            
+          mainView.router.loadPage('pendientesMat.html');
+      });
+  });
+           
   
 
 
@@ -966,10 +961,16 @@ var pickerInline = myApp.picker({
 
 
 myApp.onPageInit('pendientesMateria', function (page) {
-    $$('#new_actividad').on('click', function () { 
-   mainView.router.loadPage('formActPendiente.html');
+        $$('#new_actividad').on('click', function () { 
+       mainView.router.loadPage('formActPendiente.html');
+    });
+
 });
-});
+
+
+
+
+
 
 
 
@@ -1001,3 +1002,112 @@ myApp.onPageInit('links', function (page) {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+myApp.onPageInit('audioRecord', function (page) {
+   var band=0;
+
+   $$('#record').on('click', function(){
+           
+        if(band==0){
+            
+            var src = "Audionuevo.wav";
+            var timePos="";
+            var minutos=0;
+            var segundos=0;
+            
+            var im = document.getElementById('recImg');
+            im.setAttribute('src', 'img/stop.png');
+            
+            myMedia = new Media(src, onSuccess, onError);
+
+            
+            myMedia.startRecord();
+            
+            var recTime = 0;
+                var recInterval = setInterval(function() {
+                    recTime = recTime + 1;
+                    if(recTime<10){
+                       timePos='00:0'+recTime;
+                    }else if(recTime<60){
+                       timePos='00:'+recTime;
+                    }else{
+                       minutos=Math.floor(recTime/60);
+                       segundos=Math.floor(recTime%60);
+                       if(minutos<10){
+                           if(segundos<10){
+                              timePos='0'+minutos+':0'+segundos;
+                           }else{
+                              timePos='0'+minutos+':'+segundos;
+                           }
+                       }else{
+                           if(segundos<10){
+                              timePos=minutos+':0'+segundos;
+                           }else{
+                              timePos=minutos+':'+segundos;
+                           }
+                       }
+                    }
+                
+                setAudioPosition(timePos);
+                    
+                }, 1000);
+              band=1;
+           }else{
+                stopRecording();
+                band=0;
+           }
+
+               
+            
+         });
+
+        function onSuccess() {
+            console.log("Created Audio for Recording");
+        }
+        function onError(error) {
+            alert('code: '    + error.code    + '\n' +
+                  'message: ' + error.message + '\n');
+        }
+
+
+        function stopRecording()
+        {      
+                myMedia.stopRecord();
+                var ele=document.getElementById('audio_position');
+                ele.style.visibility="hidden";
+                myApp.modal({
+                  text: '<p style="color:black;font-weight:bold; text-align: center;font-size: 115%">Nuevo Audio</p>',
+                  afterText: '<input type="text" id="guardaAudio" class="modal-text-input" value="Audio-001" autofocus>  ',
+                   
+                  buttons: [
+                    {
+                      text: 'Guardar',
+                      onClick: function() { 
+                          
+                          //myMedia.src=$$('#guardaAudio').val();
+                          //mainView.router.loadPage('materia.html');
+                      }
+                    }
+                    
+                  ]
+                });
+
+               
+        }       
+
+        function setAudioPosition(position) {
+            document.getElementById('audio_position').innerHTML = position;
+        }
+      
+});
+
+ 

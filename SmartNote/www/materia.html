@@ -31,6 +31,7 @@
     </div>
   </div>
 
+
   <div class="page-content"> 
     <div id="listaArchivos" class="list-block inset search-here">
       <ul>
@@ -44,6 +45,7 @@
                   <div class='item-title-row'>
                     <div class='item-title'>{{nombre}}</div>
                   </div>
+
                 </div>
               </a>
             </div>
@@ -54,25 +56,7 @@
             </div>
           </div>
         </li>
-      {{/each}}
-        <!--
-        
-         <li id="mat" class="item-content">
-           
-          <div class="item-media"><i class="material-icons">&#xE06F;</i></div>
-          <a href="note.html" class="item-inner">
-            <div class="item-title">Apuntes de Comandos</div>
-          </a>
-         
-        </li>
-        <li id="mat" class="item-content">
-          <div class="item-media"><img src="img/ap1.jpg" width="25"></div>
-           <a href="foto.html" class="item-inner">
-            <div class="item-title">Img-001</div>
-           </a>
-        </li>
-        -->
-       
+      {{/each}}      
       </ul>  
     </div>
   </div>
@@ -80,7 +64,7 @@
   <div class="toolbar toolbar-bottom">
     <div class="toolbar-inner">
       <a href="#" onclick="nuevaNota({{materia.id}})" class="link"> <i class="material-icons">&#xE89C;</i></a>
-      <a href="#view-2" class="link"><i class="material-icons">&#xE029;</i></a>
+      <a href="audio.html" class="link"><i class="material-icons">&#xE029;</i></a>
       <a href="#" onclick="nuevaFoto({{materia.id}})" class="link"> <i class="material-icons">&#xE412;</i></a>
       <a href="links.html" class="link"> <i class="material-icons">&#xE80B;</i></a>
       <a href="pendientesMat.html" class="link"> <i class="material-icons">&#xE7F4;</i></a>
