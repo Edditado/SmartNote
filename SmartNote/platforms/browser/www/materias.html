@@ -13,11 +13,6 @@
             <a id="btnSearch" href="#" class="link icon-only accordion-item-toggle">
               <i class="material-icons">search</i>
             </a>
-           
-
-            <a href="#" id='newfolder' class="link icon-only">
-              <i class="material-icons">&#xE2CC;</i>
-            </a>
           </div>
         </div>           
       </div>
@@ -32,78 +27,37 @@
     </div>
   </div>
   
- <div class="page-content"> 
-   <div class="list-block inset">
+  <div class="page-content"> 
+    <div id="listaMaterias" class="list-block inset search-here">
       <ul>
-
-        <li>
-          <div class="row no-gutter">
-            <div class="col-90">
-              <a href="materia.html" id="itMat" class="item-link item-content">
-                <div class="item-media"><i class="material-icons">&#xE30D;</i></div>
-                <div class="item-inner">
-                  <div class="item-title-row">
-                    <div id="nombMateria" class="item-title">Rob&oacute;tica</div>
+      {{#each materias}}
+        <li id='{{id}}'>
+          <div class='row no-gutter'>
+            <div class='col-90'>
+              <a href='#' onclick="cargarMateria({{id}},'load',false)" class='item-link item-content'>
+                <div class='item-media'><i class='material-icons'>&#xE2C7;</i></div>
+                <div class='item-inner'>
+                  <div class='item-title-row'>
+                    <div class='item-title'>{{nombre}}</div>
                   </div>
                 </div>
               </a>
             </div>
-            <div class="col-10">
-              <a href="#" class="link icon-only item-inner open-popover" data-popover=".popover-menu">
-                <i class="material-icons">&#xE5D4;</i>
+            <div class='col-10'>
+              <a href='#' class='link icon-only item-inner materia-options'>
+                <i class='material-icons'>&#xE5D4;</i>
               </a>
             </div>
-          </div>  
+          </div>
         </li>
-
-         <li>
-          <a href="materia.html" id="itMat" class="item-link item-content">
-            <div class="item-media"><i class="material-icons">&#xE87B;</i></div>
-            <div class="item-inner">
-              <div class="item-title-row">
-                <div id="nombMateria" class="item-title">C&aacute;lculo</div>
-              </div>
-            </div>
-          </a>
-        </li>
-
-        <li>
-          <a href="materia.html" id="itMat" class="item-link item-content">
-            <div class="item-media"><i class="material-icons">&#xE927;</i></div>
-            <div class="item-inner">
-              <div class="item-title-row">
-                <div  id="nombMateria" class="item-title">Ingl&eacute;s</div>
-              </div>
-            </div>
-          </a>
-        </li>
-        <li>
-          <a href="materia.html" id="itMat" class="item-link item-content">
-            <div class="item-media"><i class="material-icons">&#xE30A;</i></div>
-            <div class="item-inner">
-              <div class="item-title-row">
-                <div id="nombMateria" class="item-title">Programaci&oacute;n</div>
-              </div>
-            </div>
-          </a>
-        </li>
-        <li>
-          <a href="materia.html" id="itMat" class="item-link item-content">
-            <div class="item-media"><i class="material-icons">&#xE30A;</i></div>
-            <div class="item-inner">
-              <div class="item-title-row">
-                <div id="nombMateria" class="item-title">Sistemas Operativos</div>
-              </div>
-            </div>
-          </a>
-        </li>
-       
+      {{/each}}
       </ul>
     </div>   
+  </div>
+  
+  <a id="new_materia" class="floating-button">
+    <i class="icon icon-plus"></i>
+  </a>
 
-    </div>
 
-    <a id="new_materia" class="floating-button">
-      <i class="icon icon-plus"></i>
-    </a>
 </div>
