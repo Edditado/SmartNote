@@ -237,14 +237,11 @@ function cargarMateria(id, method, refresh){
           case 'nota':
             archivo.icono = '&#xE06F;';
             break;
-          case 'imagen':
+          case 'foto':
             archivo.icono = '&#xE410;';
             break;
           case 'audio':
             archivo.icono = '&#xE3A1;';
-            break;
-          case 'video':
-            archivo.icono = '&#xE54D;';
             break;
           default:
             archivo.icono = '&#xE24D;';
@@ -282,25 +279,25 @@ function cargarMateria(id, method, refresh){
 
 myApp.onPageInit('materia', function (page) {
 
-  $$('#newfolder').on('click', function () {
-    myApp.modal({
-      text: '<p style="color:black;font-weight:bold; font-size: 115%" >Nueva Carpeta</p>',
-      afterText: '<input type="text" id="nuevaCarpeta" class="modal-text-input" placeholder="Nombre de carpeta" autofocus>',
-      buttons: [
-        {
-          text: 'CANCELAR',
-          onClick: function() { 
-          }
-        }, 
-        {
-          text: 'CREAR',
-          onClick: function() {
-            var nombCarpeta=$$('#nuevaCarpeta').val();
-          }
-        }, 
-      ]
-    });
-  });
+  // $$('#newfolder').on('click', function () {
+  //   myApp.modal({
+  //     text: '<p style="color:black;font-weight:bold; font-size: 115%" >Nueva Carpeta</p>',
+  //     afterText: '<input type="text" id="nuevaCarpeta" class="modal-text-input" placeholder="Nombre de carpeta" autofocus>',
+  //     buttons: [
+  //       {
+  //         text: 'CANCELAR',
+  //         onClick: function() { 
+  //         }
+  //       }, 
+  //       {
+  //         text: 'CREAR',
+  //         onClick: function() {
+  //           var nombCarpeta=$$('#nuevaCarpeta').val();
+  //         }
+  //       }, 
+  //     ]
+  //   });
+  // });
 
   $$('.archivo-options').on('click', function () {
     var archivo_id = $$(this).parents('li').attr('id');
@@ -318,64 +315,6 @@ myApp.onPageInit('materia', function (page) {
                       '</div>';
 
     myApp.popover(popoverHTML, this); 
-  });
-
-
-  var destinationType=navigator.camera.DestinationType;
-
-  $$('#camara').on('click', function () {
-
-    navigator.camera.getPicture(onSuccess, onFail, {
-    quality: 50, saveToPhotoAlbum:1, correctOrientation: true,
-    destinationType: Camera.DestinationType.FILE_URI });
-
-    function onSuccess(imageURI) {
-      verIMG(imageURI);
-    }
-      
-
-    function onFail(message) {
-      alert('Error: ' + message);
-    }
-
-
-    function verIMG(imageURI){
-      var uri;
-      var name;
-      uri = imageURI.split('/');
-      name = uri[uri.length-1];
-     // $$('#campic').attr('src',imageURI);
-      var newPageContent = '<div  class="page" data-page="fotocam">' +
-                              '<div id="fot1" class="navbar">'+
-                                  '<div class="navbar-inner">'+
-                                    '<div class="left">'+
-                                      '<a href="materia.html" class="back link icon-only">'+
-                                        '<i class="icon icon-back"></i>'+
-                                      '</a>'+
-                                    '</div>'+
-                                    '<div style="font-size: 80%">'+name+'</div>'+
-                                    '<div class="right">'+
-                                       '<i class="material-icons">&#xE5D4;</i>'+
-                                      
-                                    '</div>'+
-                                  '</div>'+           
-                                '</div>'+
-                              '<div id="fot2" class="page-content"> ' +
-                                '<div class="content-block">' +
-                                  '<div class="content-block-inner">' +
-                                    '<p>' +
-                                      '<br>' +
-                                      '<img id="campic" src='+imageURI+' width="100%" height="200%">' +
-                                    '</p>' +
-                                  '</div>' +
-                                '</div>' +
-                              '</div>' +
-                          '</div>';
-      
-       mainView.router.loadContent(newPageContent);
-          
-    }
-
   });
 
 });
@@ -398,10 +337,10 @@ function cargarArchivo(archivo_id){
       cargarNota(archivo, false);
       break;
     case "foto":
-      cargarFoto(archivo, false);
+      cargarFoto(archivo);
       break;
     case "audio":
-      cargarAudio(archivo, false);
+      cargarAudio(archivo);
       break;
     default:
       break;
@@ -564,6 +503,7 @@ myApp.onPageInit('editor', function (page) {
                 id: archivos.length +1,
                 nombre: nombNota,
                 tipo: 'nota',
+                fecha_creacion: new Date(),
                 materia_id: materia_id
               };
 
@@ -771,66 +711,180 @@ function guardarEdicionNota(nota_id){
 }
 
 
+function nuevaFoto(materia_id){
+
+  var destinationType=navigator.camera.DestinationType;
+
+  navigator.camera.getPicture(onSuccess, onFail, {
+    quality: 50, 
+    saveToPhotoAlbum:1, 
+    correctOrientation: true,
+    destinationType: Camera.DestinationType.FILE_URI 
+  });
+
+  function onSuccess(imageURI) {
+
+    myApp.modal({
+      text: '<p style="color:black;font-weight:bold; font-size: 115%" >Guardar Foto</p>',
+      afterText: '<input type="text" id="nomFoto" class="modal-text-input" placeholder="Nombre" autofocus/>',
+      buttons: [
+        {
+          text: 'CANCELAR',
+          onClick: function() { 
+          }
+        }, 
+        {
+          text: 'GUARDAR',
+          onClick: function() {   
+            if( localStorage.getItem('archivos') ){
+              var archivos = JSON.parse( localStorage.getItem('archivos') );
+              if( localStorage.getItem('fotos') ){
+                var fotos = JSON.parse( localStorage.getItem('fotos') );
+              }
+              else{
+                var fotos = [];
+              }
+            }
+            else{
+              var archivos = [];
+              var fotos = [];
+            }
+
+            //var uri = imageURI.split('/');
+            //var name = uri[uri.length-1];
+
+            var newArchivo = {
+              id: archivos.length +1,
+              nombre: $$("#nomFoto").val(),
+              tipo: 'foto',
+              fecha_creacion: new Date(),
+              materia_id: materia_id
+            };
+
+            var newFoto = {
+              id: fotos.length +1,
+              path: imageURI,
+              archivo_id: newArchivo.id
+            };
+
+            archivos.push(newArchivo);
+            fotos.push(newFoto);
+
+            localStorage.setItem('archivos', JSON.stringify(archivos) );
+            localStorage.setItem('fotos', JSON.stringify(fotos) );
+
+            cargarMateria(materia_id, 'load', true);
+          }
+        }, 
+      ]
+    });
+
+    $$(".modal-button").filter(function() {
+      return $$(this).text() == "GUARDAR";
+    }).attr('disabled','');
+
+    $$("#nomFoto").on('keyup', function(){
+      if( $$(this).val() ){
+        $$(".modal-button").filter(function() {
+            return $$(this).text() == "GUARDAR";
+        }).removeAttr('disabled');
+      }
+      else{
+        $$(".modal-button").filter(function() {
+            return $$(this).text() == "GUARDAR";
+        }).attr('disabled','');
+      }
+    });
+  }
+    
+  function onFail(message) {
+    alert('Error: ' + message);
+  }
+
+}
+
+
+
+function cargarFoto(archivo){
+  var fotos = JSON.parse( localStorage.getItem("fotos") );
+  var foto = {};
+
+  $$.each(fotos, function(i, obj){
+    if(obj.archivo_id == archivo.id){
+      foto = obj;
+      return false;
+    }
+  });
+
+  mainView.router.load({
+    url: 'foto.html',
+    context: {
+      archivo: archivo,
+      foto: foto
+    }
+  });
+      
+}
+
 
 
 myApp.onPageInit('NuevopendienteMateria', function (page) {
    
 
-    $$('#saveAct').on('click', function () {
-    
- 
+  $$('#saveAct').on('click', function () {
+  
     myApp.confirm('Guardar Actividad?', function () {
 
-                 var nombAct = $$('#guardaAct').val();
-                   var fecha = $$('#guardaFech').val();
-                   var horai = $$('#picker-date').val();
-                   
-                   var hor = horai.split(':');
-                   var fecha = fecha.split("/");
-                   var d =  new Date(fecha[1]+"/"+fecha[0]+"/"+fecha[2]);
-                   var hora="";
-                   var minuto="";
-                   if(horai!=""){
-                      hora=hor[0]; 
-                      minuto=hor[1]; 
-                   }
-                   
-                    d.setHours(hora);
-                    d.setMinutes(minuto);
-                    d.setSeconds("00");
-                   
-                 plugin.notification.local.registerPermission(function (granted) {
-                              //alert("promptForPermission: "+granted);
-                              
-                });
-                                      var now = new Date().getTime(),
-                                                    _5_sec_from_now = new Date(now + 5 * 1000);
+           var nombAct = $$('#guardaAct').val();
+             var fecha = $$('#guardaFech').val();
+             var horai = $$('#picker-date').val();
+             
+             var hor = horai.split(':');
+             var fecha = fecha.split("/");
+             var d =  new Date(fecha[1]+"/"+fecha[0]+"/"+fecha[2]);
+             var hora="";
+             var minuto="";
+             if(horai!=""){
+                hora=hor[0]; 
+                minuto=hor[1]; 
+             }
+             
+              d.setHours(hora);
+              d.setMinutes(minuto);
+              d.setSeconds("00");
+             
+           plugin.notification.local.registerPermission(function (granted) {
+                        //alert("promptForPermission: "+granted);
+                        
+          });
+                                var now = new Date().getTime(),
+                                              _5_sec_from_now = new Date(now + 5 * 1000);
 
-                                                var sound = device.platform == 'Android' ? 'file://sound.mp3' : 'file://beep.caf';
-                                                
-                                                  
-                                                 // alert(_5_sec_from_now);
-                                                    /*cordova.plugins.notification.local.cancelAll(function() {
-                                                      alert("done");
-                                                  }, this);*/
+                                          var sound = device.platform == 'Android' ? 'file://sound.mp3' : 'file://beep.caf';
+                                          
+                                            
+                                           // alert(_5_sec_from_now);
+                                              /*cordova.plugins.notification.local.cancelAll(function() {
+                                                alert("done");
+                                            }, this);*/
 
-                                                    cordova.plugins.notification.local.schedule({
-                                                      id         : 1,
-                                                      title      : 'SmartNote - Robótica',
-                                                      text       : nombAct,
-                                                      sound      : null,
-                                                      autoClear  : false,
-                                                      //sound: "file://sound.mp3",
-                                                      sound: sound,
-                                                      at         :  d
-                                                    });
-                                                    
+                                              cordova.plugins.notification.local.schedule({
+                                                id         : 1,
+                                                title      : 'SmartNote - Robótica',
+                                                text       : nombAct,
+                                                sound      : null,
+                                                autoClear  : false,
+                                                //sound: "file://sound.mp3",
+                                                sound: sound,
+                                                at         :  d
+                                              });
+                                              
 
 
-                                  
-                mainView.router.loadPage('pendientesMat.html');
-            });
-        });
+                            
+          mainView.router.loadPage('pendientesMat.html');
+      });
+  });
            
   
 

@@ -47,5 +47,4 @@
     <preference name="loglevel" value="DEBUG" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="android-minSdkVersion" value="9" />
-    <preference name="AndroidPersistentFileLocation" value="Compatibility" />
 </widget>
