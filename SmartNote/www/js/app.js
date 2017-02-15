@@ -800,7 +800,7 @@ myApp.onPageInit('NuevopendienteMateria', function (page) {
                     d.setSeconds("00");
                    
                  plugin.notification.local.registerPermission(function (granted) {
-                              alert("promptForPermission: "+granted);
+                              //alert("promptForPermission: "+granted);
                               
                 });
                                       var now = new Date().getTime(),
@@ -965,7 +965,7 @@ myApp.onPageInit('audioRecord', function (page) {
            
         if(band==0){
             
-            var src = "Pruebaaudio2.wav";
+            var src = "Audionuevo.wav";
             var timePos="";
             var minutos=0;
             var segundos=0;
@@ -1040,7 +1040,7 @@ myApp.onPageInit('audioRecord', function (page) {
                       onClick: function() { 
                           
                           //myMedia.src=$$('#guardaAudio').val();
-                          mainView.router.loadPage('materia.html');
+                          //mainView.router.loadPage('materia.html');
                       }
                     }
                     
