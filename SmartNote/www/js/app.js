@@ -513,7 +513,7 @@ function nuevaNota(materia_id){
   mainView.router.load({
     url: 'editor.html',
     context: {
-      materia_id
+      materia_id: materia_id
     }
   });
 
