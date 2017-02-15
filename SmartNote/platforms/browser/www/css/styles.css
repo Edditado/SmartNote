@@ -214,3 +214,18 @@ textarea{
 .content-block-inner{
 vertical-align:middle;
 }
+
+#audio_position{
+    font-weight: bold;
+    font-size: 50px;
+}
+
+#contRecord{
+    text-align:center;
+    border-style: none;
+    vertical-align:middle;
+}
+
+#hide{
+  visibility: hidden; 
+}

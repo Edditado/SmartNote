@@ -21,10 +21,25 @@
         },
         "cordova-plugin-audio-recorder-api": {
             "PACKAGE_NAME": "com.phonegap.prueba3"
+        },
+        "de.appplant.cordova.plugin.local-notification": {
+            "PACKAGE_NAME": "com.phonegap.prueba3"
+        },
+        "cordova-plugin-media": {
+            "PACKAGE_NAME": "com.phonegap.prueba3"
         }
     },
     "dependent_plugins": {
         "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.phonegap.prueba3"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.phonegap.prueba3"
+        },
+        "cordova-plugin-app-event": {
+            "PACKAGE_NAME": "com.phonegap.prueba3"
+        },
+        "cordova-plugin-file": {
             "PACKAGE_NAME": "com.phonegap.prueba3"
         }
     }

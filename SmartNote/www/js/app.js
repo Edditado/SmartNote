@@ -13,70 +13,98 @@ var mainView = myApp.addView('.view-main');
 
 
 
+    
+   /*plugin.notification.local.promptForPermission(function (granted) {
+    alert("promptForPermission: "+granted);
+    notif();
+  });
+
+  plugin.notification.local.hasPermission(function (granted) {
+    alert("hasPermission: "+granted);
+    notif();
+  });
+*/
+
+$$(document).on('deviceready', function() {
+
+
+  
+});
+
+
+   
+ $$('#aude').on('click', function (e) { //Close panel when you open a new page
+ 
+
+  
+});
+
+ 
+
 
 $$('a').on('click', function (e) { //Close panel when you open a new page
   myApp.closePanel();
 });
-
-// $$('#btnSearch').on('click', function (e) { //Close panel when you open a new page
-//   var state = $$('.searchbar').css('display');
-//   if(state == 'none'){
-//     $$('.searchbar').show();
-//   }
-//   else{
-//     $$('.searchbar').hide();
-//   }
-// });
-
-
-
-
-
-
 
 
 
 
 
 myApp.onPageInit('NuevopendienteMateria', function (page) {
- 
-  /*var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August' , 'September' , 'October', 'November', 'December'];
- 
-  var calendarInline = myApp.calendar({
-      container: '#calendar-inline-container',
-      value: [new Date()],
-      weekHeader: false,
-      dateFormat: 'dd/mm/yyyy',
-      toolbarTemplate: 
-          '<div class="toolbar calendar-custom-toolbar">' +
-              '<div class="toolbar-inner">' +
-                  '<div class="left">' +
-                      '<a href="#" class="link icon-only"><i class="icon icon-back"></i></a>' +
-                  '</div>' +
-                  '<div class="center"></div>' +
-                  '<div class="right">' +
-                      '<a href="#" class="link icon-only"><i class="icon icon-forward"></i></a>' +
-                  '</div>' +
-              '</div>' +
-          '</div>',
-      onOpen: function (p) {
-          $$('.calendar-custom-toolbar .center').text(monthNames[p.currentMonth] +', ' + p.currentYear);
-          $$('.calendar-custom-toolbar .left .link').on('click', function () {
-              calendarInline.prevMonth();
-          });
-          $$('.calendar-custom-toolbar .right .link').on('click', function () {
-              calendarInline.nextMonth();
-          });
-      },
-      onMonthYearChangeStart: function (p) {
-          $$('.calendar-custom-toolbar .center').text(monthNames[p.currentMonth] +', ' + p.currentYear);
-      }
-});    
-*/
+   
 
-
-$$('#saveAct').on('click', function () { 
+    $$('#saveAct').on('click', function () {
+    
+ 
     myApp.confirm('Guardar Actividad?', function () {
+
+                 var nombAct = $$('#guardaAct').val();
+                   var fecha = $$('#guardaFech').val();
+                   var horai = $$('#picker-date').val();
+                   
+                   var hor = horai.split(':');
+                   var fecha = fecha.split("/");
+                   var d =  new Date(fecha[1]+"/"+fecha[0]+"/"+fecha[2]);
+                   var hora="";
+                   var minuto="";
+                   if(horai!=""){
+                      hora=hor[0]; 
+                      minuto=hor[1]; 
+                   }
+                   
+                    d.setHours(hora);
+                    d.setMinutes(minuto);
+                    d.setSeconds("00");
+                   
+                 plugin.notification.local.registerPermission(function (granted) {
+                              alert("promptForPermission: "+granted);
+                              
+                });
+                                      var now = new Date().getTime(),
+                                                    _5_sec_from_now = new Date(now + 5 * 1000);
+
+                                                var sound = device.platform == 'Android' ? 'file://sound.mp3' : 'file://beep.caf';
+                                                
+                                                  
+                                                 // alert(_5_sec_from_now);
+                                                    /*cordova.plugins.notification.local.cancelAll(function() {
+                                                      alert("done");
+                                                  }, this);*/
+
+                                                    cordova.plugins.notification.local.schedule({
+                                                      id         : 1,
+                                                      title      : 'SmartNote - Robótica',
+                                                      text       : nombAct,
+                                                      sound      : null,
+                                                      autoClear  : false,
+                                                      //sound: "file://sound.mp3",
+                                                      sound: sound,
+                                                      at         :  d
+                                                    });
+                                                    
+
+
+                                  
         mainView.router.loadPage('pendientesMat.html');
     });
 });
@@ -161,38 +189,16 @@ myApp.onPageInit('pendientesMateria', function (page) {
     $$('#new_actividad').on('click', function () { 
    mainView.router.loadPage('formActPendiente.html');
 });
+
+
+
 });
 
 
 
 
 
-myApp.onPageInit('ciclos', function (page) {
-  var ciclos = localStorage.getItem('ciclos');
-  console.log(ciclos);
 
-  $$('#new_ciclo').on('click', function () {   
-    myApp.modal({
-      text: '<p style="color:black;font-weight:bold; font-size: 115%" >Nuevo Ciclo</p>',
-      afterText: '<input type="text" id="nuevoCiclo" class="modal-text-input" placeholder="Nombre" autofocus>',
-      buttons: [
-        {
-          text: 'CANCELAR',
-          onClick: function(){
-          }
-        }, 
-        {
-          text: 'CREAR',
-          onClick: function() {
-            var nombCiclo = $$('#nuevoCiclo').val();
-            mainView.router.loadPage('ciclos.html');
-          }
-        }, 
-      ]
-    });
-  });
-
-});
 
 
 myApp.onPageInit('materias', function (page) {
@@ -361,18 +367,14 @@ myApp.onPageInit('editor', function (page) {
       }else{
         el.style.fontSize = '20px';
         ic.style.color='#6E6E6E';
-      }
-
-
-           
+      }          
   });
 
 
+ 
+
 
 });
-
-
-
 
 
 
@@ -472,3 +474,108 @@ myApp.onPageInit('materia', function (page) {
            
 
 });
+
+
+
+
+
+
+myApp.onPageInit('audioRecord', function (page) {
+   var band=0;
+
+   $$('#record').on('click', function(){
+           
+        if(band==0){
+            
+            var src = "Pruebaaudio2.wav";
+            var timePos="";
+            var minutos=0;
+            var segundos=0;
+            
+            var im = document.getElementById('recImg');
+            im.setAttribute('src', 'img/stop.png');
+            
+            myMedia = new Media(src, onSuccess, onError);
+
+            
+            myMedia.startRecord();
+            
+            var recTime = 0;
+                var recInterval = setInterval(function() {
+                    recTime = recTime + 1;
+                    if(recTime<10){
+                       timePos='00:0'+recTime;
+                    }else if(recTime<60){
+                       timePos='00:'+recTime;
+                    }else{
+                       minutos=Math.floor(recTime/60);
+                       segundos=Math.floor(recTime%60);
+                       if(minutos<10){
+                           if(segundos<10){
+                              timePos='0'+minutos+':0'+segundos;
+                           }else{
+                              timePos='0'+minutos+':'+segundos;
+                           }
+                       }else{
+                           if(segundos<10){
+                              timePos=minutos+':0'+segundos;
+                           }else{
+                              timePos=minutos+':'+segundos;
+                           }
+                       }
+                    }
+                
+                setAudioPosition(timePos);
+                    
+                }, 1000);
+              band=1;
+           }else{
+                stopRecording();
+                band=0;
+           }
+
+               
+            
+         });
+
+        function onSuccess() {
+            console.log("Created Audio for Recording");
+        }
+        function onError(error) {
+            alert('code: '    + error.code    + '\n' +
+                  'message: ' + error.message + '\n');
+        }
+
+
+        function stopRecording()
+        {      
+                myMedia.stopRecord();
+                var ele=document.getElementById('audio_position');
+                ele.style.visibility="hidden";
+                myApp.modal({
+                  text: '<p style="color:black;font-weight:bold; text-align: center;font-size: 115%">Nuevo Audio</p>',
+                  afterText: '<input type="text" id="guardaAudio" class="modal-text-input" value="Audio-001" autofocus>  ',
+                   
+                  buttons: [
+                    {
+                      text: 'Guardar',
+                      onClick: function() { 
+                          
+                          //myMedia.src=$$('#guardaAudio').val();
+                          mainView.router.loadPage('materia.html');
+                      }
+                    }
+                    
+                  ]
+                });
+
+               
+        }       
+
+        function setAudioPosition(position) {
+            document.getElementById('audio_position').innerHTML = position;
+        }
+      
+});
+
+ 
