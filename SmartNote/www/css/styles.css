@@ -127,15 +127,14 @@ li i {
 
 
 textarea{
-  width: 340px;
-  height: 400px;
-  margin-top: 9px;
-  margin-left: 9px;
-  margin-right: : 9px;
+  width: 100%;
+  height: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
   border-style: none;
   font-size: 20px;
   color: black;
-  padding-top: 50px;
 }
 
 
@@ -194,17 +193,13 @@ textarea{
   color: black;
 }
 
-#titulo{
+.titulo_nota{
   font-weight: bold;
   font-size: 19px;
   /*border-bottom: 1px solid #F1F0E3;*/
   box-shadow: 0 1px 0 0 #F1F0E3;
 }
 
-#nota1{
-    text-align: justify;
-    text-justify: inter-word;
-  }
 
 #fot1, #fot2{
   background: black;

@@ -2,40 +2,759 @@ var myApp = new Framework7({
   material: true,
   swipeout: false,
   modalTitle: false,
+  template7Pages: true,
 });
 
 var $$ = Dom7;
 
 var mainView = myApp.addView('.view-main');
 
-  
-
-
-
-
 
 $$('a').on('click', function (e) { //Close panel when you open a new page
   myApp.closePanel();
 });
 
-// $$('#btnSearch').on('click', function (e) { //Close panel when you open a new page
-//   var state = $$('.searchbar').css('display');
-//   if(state == 'none'){
-//     $$('.searchbar').show();
-//   }
-//   else{
-//     $$('.searchbar').hide();
-//   }
-// });
+
+function cargarMaterias(method, refresh){
+  var materias = [];
+  if( localStorage.getItem('materias') ){
+    materias = JSON.parse( localStorage.getItem('materias') );
+  }
+
+  if(method == 'load'){
+    mainView.router.load({
+      url: 'materias.html',
+      reload: refresh,
+      context: {
+        materias: materias.reverse() 
+      }
+    });
+  }
+  else{
+    mainView.router.back({
+      url: 'materias.html',
+      force: true,
+      context: {
+        materias: materias.reverse() 
+      }
+    });
+  }
+  
+}
+
+
+myApp.onPageInit('materias', function (page) {
+
+  $$('#new_materia').on('click', function () {
+    myApp.modal({
+      text: '<p style="color:black;font-weight:bold; font-size: 115%" >Nueva Materia</p>',
+      afterText: '<input type="text" id="nuevaMat" class="modal-text-input" placeholder="Nombre" autofocus>',
+      buttons: [
+        {
+          text: 'CANCELAR',
+          onClick: function() { 
+          }
+        }, 
+        {
+          text: 'CREAR',
+          onClick: function() {
+            if( $$('#nuevaMat').val() ){
+              if( localStorage.getItem('materias') ){
+                var materias = JSON.parse( localStorage.getItem('materias') );
+              }
+              else{
+                var materias = [];
+              }
+
+              var newMateria = {
+                id: materias.length +1,
+                nombre: $$('#nuevaMat').val()
+              };
+
+              materias.push(newMateria);
+              localStorage.setItem('materias', JSON.stringify(materias) );
+              cargarMaterias('load', true);
+            }
+          }
+        }, 
+      ]
+    });
+
+    $$(".modal-button").filter(function() {
+        return $$(this).text() == "CREAR";
+    }).attr('disabled','');
+
+    $$("#nuevaMat").on('keyup', function(){
+      if( $$(this).val() ){
+        $$(".modal-button").filter(function() {
+            return $$(this).text() == "CREAR";
+        }).removeAttr('disabled');
+      }
+      else{
+        $$(".modal-button").filter(function() {
+            return $$(this).text() == "CREAR";
+        }).attr('disabled','');
+      }
+    });
+
+  });
+
+  $$('.materia-options').on('click', function () {
+    var materia_id = $$(this).parents('li').attr('id');
+    var materia_nom = $$(this).parents('li').find('div.item-title').text();
+
+    var popoverHTML = '<div class="popover">'+
+                        '<div class="popover-inner">'+
+                          '<div class="list-block">'+
+                            '<ul>'+
+                              '<li><a href="#" class="item-link list-button close-popover" onclick="editarMateria('+materia_id+',\''+materia_nom+'\')">Cambiar nombre</li>'+
+                              '<li><a href="#" class="item-link list-button close-popover" onclick="eliminarMateria('+materia_id+')">Eliminar</li>'+
+                            '</ul>'+
+                          '</div>'+
+                        '</div>'+
+                      '</div>';
+
+    myApp.popover(popoverHTML, this); 
+  });
+
+});
+
+
+function editarMateria(id, nombre){
+  myApp.modal({
+    text: '<p style="color:black;font-weight:bold; font-size: 115%" >Editar Materia</p>',
+    afterText: '<input id="inputEditar" type="text" class="modal-text-input" placeholder="Nombre" value="'+nombre+'" autofocus>',
+    buttons: [
+      {
+        text: 'CANCELAR',
+        onClick: function() { 
+        }
+      }, 
+      {
+        text: 'GUARDAR',
+        onClick: function() {
+          var materias = JSON.parse( localStorage.getItem('materias') );
+
+          $$.each(materias, function(i, materia){
+            if(materia.id == id){
+              materia.nombre = $$('#inputEditar').val();
+              return false;
+            }
+          });
+
+          localStorage.setItem('materias', JSON.stringify(materias) );
+          cargarMaterias('load', true);
+        }
+      }, 
+    ]
+  });
+
+  $$("#inputEditar").on('keyup', function(){
+    if( $$(this).val() ){
+      $$(".modal-button").filter(function() {
+          return $$(this).text() == "GUARDAR";
+      }).removeAttr('disabled');
+    }
+    else{
+      $$(".modal-button").filter(function() {
+          return $$(this).text() == "GUARDAR";
+      }).attr('disabled','');
+    }
+  });
+}
+
+
+function eliminarMateria(id){
+  myApp.modal({
+    text: '<p style="color:black;font-weight:bold; font-size: 115%" >Eliminar Materia</p>',
+    afterText: '<p>Se perderan todos los elementos de esta materia.</p>',
+    buttons: [
+      {
+        text: 'CANCELAR',
+        onClick: function() { 
+        }
+      }, 
+      {
+        text: 'ELIMINAR',
+        onClick: function() {
+          var materias = JSON.parse( localStorage.getItem('materias') );
+
+          $$.each(materias, function(index, materia){
+            if(materia.id == id){
+              materias.splice(index,1);
+              return false;
+            }
+          });
+
+          localStorage.setItem('materias', JSON.stringify(materias) );
+
+          if( localStorage.getItem('archivos') ){
+            var archivos = JSON.parse( localStorage.getItem('archivos') );
+
+            $$.each(archivos, function(index, archivo){
+              if(archivo.materia_id == id){
+                archivos.splice(index,1);
+              }
+            });
+
+            localStorage.setItem('archivos', JSON.stringify(archivos) );
+          }
+
+          cargarMaterias('load', true);
+        }
+      }, 
+    ]
+  });
+}
 
 
 
+function cargarMateria(id, method, refresh){
+  var materias = JSON.parse( localStorage.getItem('materias') );
+  var materia = {};
+
+  $$.each(materias, function(index, elemento){
+    if(elemento.id == id){
+      materia = elemento;
+      return false;
+    }
+  });
+
+  var archivos = [];
+
+  if( localStorage.getItem('archivos') ){
+    var archivosAll = JSON.parse( localStorage.getItem('archivos') );
+
+    $$.each(archivosAll, function(index, archivo){ 
+      if(archivo.materia_id == materia.id){
+
+        switch(archivo.tipo){
+          case 'nota':
+            archivo.icono = '&#xE06F;';
+            break;
+          case 'imagen':
+            archivo.icono = '&#xE410;';
+            break;
+          case 'audio':
+            archivo.icono = '&#xE3A1;';
+            break;
+          case 'video':
+            archivo.icono = '&#xE54D;';
+            break;
+          default:
+            archivo.icono = '&#xE24D;';
+            break;
+        }
+
+        archivos.push(archivo);
+      }
+    });
+  }
+
+  if(method == 'load'){
+    mainView.router.load({
+      url: 'materia.html',
+      reload: refresh,
+      context: {
+        materia: materia,
+        archivos: archivos.reverse() 
+      }
+    });
+  }
+  else{
+    mainView.router.back({
+      url: 'materia.html',
+      force: true,
+      context: {
+        materia: materia,
+        archivos: archivos.reverse() 
+      }
+    });
+  }
+  
+}
+
+
+myApp.onPageInit('materia', function (page) {
+
+  $$('#newfolder').on('click', function () {
+    myApp.modal({
+      text: '<p style="color:black;font-weight:bold; font-size: 115%" >Nueva Carpeta</p>',
+      afterText: '<input type="text" id="nuevaCarpeta" class="modal-text-input" placeholder="Nombre de carpeta" autofocus>',
+      buttons: [
+        {
+          text: 'CANCELAR',
+          onClick: function() { 
+          }
+        }, 
+        {
+          text: 'CREAR',
+          onClick: function() {
+            var nombCarpeta=$$('#nuevaCarpeta').val();
+          }
+        }, 
+      ]
+    });
+  });
+
+  $$('.archivo-options').on('click', function () {
+    var archivo_id = $$(this).parents('li').attr('id');
+    var archivo_nom = $$(this).parents('li').find('div.item-title').text();
+
+    var popoverHTML = '<div class="popover">'+
+                        '<div class="popover-inner">'+
+                          '<div class="list-block">'+
+                            '<ul>'+
+                              '<li><a href="#" class="item-link list-button close-popover" onclick="editarArchivo('+archivo_id+',\''+archivo_nom+'\')">Cambiar nombre</li>'+
+                              '<li><a href="#" class="item-link list-button close-popover" onclick="eliminarArchivo('+archivo_id+')">Eliminar</li>'+
+                            '</ul>'+
+                          '</div>'+
+                        '</div>'+
+                      '</div>';
+
+    myApp.popover(popoverHTML, this); 
+  });
+
+
+  var destinationType=navigator.camera.DestinationType;
+
+  $$('#camara').on('click', function () {
+
+    navigator.camera.getPicture(onSuccess, onFail, {
+    quality: 50, saveToPhotoAlbum:1, correctOrientation: true,
+    destinationType: Camera.DestinationType.FILE_URI });
+
+    function onSuccess(imageURI) {
+      verIMG(imageURI);
+    }
+      
+
+    function onFail(message) {
+      alert('Error: ' + message);
+    }
+
+
+    function verIMG(imageURI){
+      var uri;
+      var name;
+      uri = imageURI.split('/');
+      name = uri[uri.length-1];
+     // $$('#campic').attr('src',imageURI);
+      var newPageContent = '<div  class="page" data-page="fotocam">' +
+                              '<div id="fot1" class="navbar">'+
+                                  '<div class="navbar-inner">'+
+                                    '<div class="left">'+
+                                      '<a href="materia.html" class="back link icon-only">'+
+                                        '<i class="icon icon-back"></i>'+
+                                      '</a>'+
+                                    '</div>'+
+                                    '<div style="font-size: 80%">'+name+'</div>'+
+                                    '<div class="right">'+
+                                       '<i class="material-icons">&#xE5D4;</i>'+
+                                      
+                                    '</div>'+
+                                  '</div>'+           
+                                '</div>'+
+                              '<div id="fot2" class="page-content"> ' +
+                                '<div class="content-block">' +
+                                  '<div class="content-block-inner">' +
+                                    '<p>' +
+                                      '<br>' +
+                                      '<img id="campic" src='+imageURI+' width="100%" height="200%">' +
+                                    '</p>' +
+                                  '</div>' +
+                                '</div>' +
+                              '</div>' +
+                          '</div>';
+      
+       mainView.router.loadContent(newPageContent);
+          
+    }
+
+  });
+
+});
+
+
+function cargarArchivo(archivo_id){
+  var archivos = JSON.parse( localStorage.getItem("archivos") );  
+  var archivo = {};
+  var tipo_archivo = {};
+
+  $$.each(archivos, function(i, obj){
+    if(obj.id == archivo_id){
+      archivo = obj;
+      return false;
+    }
+  });
+
+  switch(archivo.tipo){
+    case "nota":
+      cargarNota(archivo, false);
+      break;
+    case "foto":
+      cargarFoto(archivo, false);
+      break;
+    case "audio":
+      cargarAudio(archivo, false);
+      break;
+    default:
+      break;
+  }
+}
+
+
+function editarArchivo(id, nombre){
+  myApp.modal({
+    text: '<p style="color:black;font-weight:bold; font-size: 115%" >Editar Archivo</p>',
+    afterText: '<input id="inputEditar" type="text" class="modal-text-input" placeholder="Nombre" value="'+nombre+'" autofocus>',
+    buttons: [
+      {
+        text: 'CANCELAR',
+        onClick: function() { 
+        }
+      }, 
+      {
+        text: 'GUARDAR',
+        onClick: function() {
+          var archivos = JSON.parse( localStorage.getItem('archivos') );
+          var materia_id = 0;
+
+          $$.each(archivos, function(i, archivo){
+            if(archivo.id == id){
+              archivo.nombre = $$('#inputEditar').val();
+              materia_id = archivo.materia_id;
+              return false;
+            }
+          });
+
+          localStorage.setItem('archivos', JSON.stringify(archivos) );
+          cargarMateria(materia_id, 'load', true);
+        }
+      }, 
+    ]
+  });
+
+  $$("#inputEditar").on('keyup', function(){
+    if( $$(this).val() ){
+      $$(".modal-button").filter(function() {
+          return $$(this).text() == "GUARDAR";
+      }).removeAttr('disabled');
+    }
+    else{
+      $$(".modal-button").filter(function() {
+          return $$(this).text() == "GUARDAR";
+      }).attr('disabled','');
+    }
+  });
+}
 
 
 
+function eliminarArchivo(id){
+  myApp.modal({
+    text: '<p style="color:black;font-weight:bold; font-size: 115%" >Eliminar Archivo</p>',
+    afterText: '<p>Se borrará el archivo de esta materia.</p>',
+    buttons: [
+      {
+        text: 'CANCELAR',
+        onClick: function() { 
+        }
+      }, 
+      {
+        text: 'ELIMINAR',
+        onClick: function() {
+          var materia_id = 0;
+          var tabla = "";
+
+          var archivos = JSON.parse( localStorage.getItem('archivos') );
+          $$.each(archivos, function(index, archivo){
+            if(archivo.id == id){
+              switch(archivo.tipo){
+                case "nota":
+                  tabla = "notas";
+                  break;
+                case "foto":
+                  tabla = "fotos";
+                  break;
+                default:
+                  tabla = "audios";
+                  break;
+              }
+              archivos.splice(index,1);
+              materia_id = archivo.materia_id;
+              return false;
+            }
+          });
+
+          var elementos = JSON.parse( localStorage.getItem(tabla) );
+          $$.each(elementos, function(index, elemento){
+            if(elemento.archivo_id == id){
+              elementos.splice(index,1);
+              return false;
+            }
+          });
+
+
+          localStorage.setItem('archivos', JSON.stringify(archivos) );
+          localStorage.setItem(tabla, JSON.stringify(elementos) );
+
+          cargarMateria(materia_id, 'load', true);
+        }
+      }, 
+    ]
+  });
+}
 
 
 
+function nuevaNota(materia_id){
+  
+  mainView.router.load({
+    url: 'editor.html',
+    context: {
+      materia_id
+    }
+  });
+
+}
+
+
+myApp.onPageInit('editor', function (page) {
+
+    $$('#saveNote').on('click', function () {
+      var materia_id = $$(this).attr('materia');
+
+      myApp.modal({
+        text: '<p style="color:black;font-weight:bold; font-size: 115%" >Guardar Nota</p>',
+        afterText: '<input type="text" id="nomNota" class="modal-text-input" placeholder="Nombre de nota" autofocus/>',
+        buttons: [
+          {
+            text: 'CANCELAR',
+            onClick: function() { 
+            }
+          }, 
+          {
+            text: 'GUARDAR',
+            onClick: function() {
+              var nombNota = $$('#nomNota').val();
+              var contNota = $$('#newnote').val();
+              var formatoNota = $$('#newnote').attr('style');
+
+              if( localStorage.getItem('archivos') ){
+                var archivos = JSON.parse( localStorage.getItem('archivos') );
+                if( localStorage.getItem('notas') ){
+                  var notas = JSON.parse( localStorage.getItem('notas') );
+                }
+                else{
+                  var notas = [];
+                }
+              }
+              else{
+                var archivos = [];
+                var notas = [];
+              }
+
+              var newArchivo = {
+                id: archivos.length +1,
+                nombre: nombNota,
+                tipo: 'nota',
+                materia_id: materia_id
+              };
+
+              var newNota = {
+                id: notas.length +1,
+                contenido: contNota,
+                formato: formatoNota,
+                archivo_id: newArchivo.id
+              };
+
+              archivos.push(newArchivo);
+              notas.push(newNota);
+
+              localStorage.setItem('archivos', JSON.stringify(archivos) );
+              localStorage.setItem('notas', JSON.stringify(notas) );
+
+              cargarMateria(materia_id, 'back', false);
+
+            }
+          }, 
+        ]
+      });
+
+      $$(".modal-button").filter(function() {
+        return $$(this).text() == "GUARDAR";
+      }).attr('disabled','');
+
+      $$("#nomNota").on('keyup', function(){
+        if( $$(this).val() ){
+          $$(".modal-button").filter(function() {
+              return $$(this).text() == "GUARDAR";
+          }).removeAttr('disabled');
+        }
+        else{
+          $$(".modal-button").filter(function() {
+              return $$(this).text() == "GUARDAR";
+          }).attr('disabled','');
+        }
+      });
+
+    });
+
+    
+    $$('#bold').on('click', function () {
+      if( $$("#newnote").css('font-weight') == 'bold' ){
+        $$("#newnote").css('font-weight','normal');
+        $$(this).css('color','#6E6E6E');
+      } 
+      else{
+        $$("#newnote").css('font-weight','bold');
+        $$(this).css('color','black');
+      }     
+    });
+
+    $$('#italic').on('click', function () {     
+      if( $$("#newnote").css('font-style') == 'italic' ){
+        $$("#newnote").css('font-style','normal');
+        $$(this).css('color','#6E6E6E');
+      } 
+      else{
+        $$("#newnote").css('font-style','italic');
+        $$(this).css('color','black');
+      }      
+    });
+    
+    $$('#underl').on('click', function () {
+      if( $$("#newnote").css('text-decoration') == 'underline' ){
+        $$("#newnote").css('text-decoration','none');
+        $$(this).css('color','#6E6E6E');
+      } 
+      else{
+        $$("#newnote").css('text-decoration','underline');
+        $$(this).css('color','black');
+      }               
+    });
+
+    $$('#sizeText').on('click', function () {
+      if($$("#newnote").css('font-size') == '20px'){
+        $$("#newnote").css('font-size','25px');
+        $$(this).css('color','black');  
+      }else if($$("#newnote").css('font-size') == '25px'){
+        $$("#newnote").css('font-size','30px');
+        $$(this).css('color','black'); 
+      }
+      else if($$("#newnote").css('font-size') == '30px'){
+        $$("#newnote").css('font-size','15px');
+        $$(this).css('color','black'); 
+      }else{
+        $$("#newnote").css('font-size','20px');
+        $$(this).css('color','#6E6E6E'); 
+      }            
+    });
+
+});
+
+
+function cargarNota(archivo, refresh){
+  var notas = JSON.parse( localStorage.getItem("notas") );
+  var nota = {};
+
+  $$.each(notas, function(i, obj){
+    if(obj.archivo_id == archivo.id){
+      nota = obj;
+      return false;
+    }
+  });
+
+  mainView.router.load({
+    url: 'note.html',
+    reload: refresh,
+    context: {
+      archivo: archivo,
+      nota: nota
+    }
+  });
+}
+
+
+myApp.onPageInit('note', function (page) {
+  $$("#btnEditarNota").on('click', function(){
+    $$("#editArea").removeAttr('readonly');
+    $$("#divGuardar").show();
+    $$("#hiddenToolbar").show();
+    $$(this).hide();    
+  });
+
+  $$('#bold').on('click', function () {
+    if( $$("#editArea").css('font-weight') == 'bold' ){
+      $$("#editArea").css('font-weight','normal');
+      $$(this).css('color','#6E6E6E');
+    } 
+    else{
+      $$("#editArea").css('font-weight','bold');
+      $$(this).css('color','black');
+    }     
+  });
+
+  $$('#italic').on('click', function () {     
+    if( $$("#editArea").css('font-style') == 'italic' ){
+      $$("#editArea").css('font-style','normal');
+      $$(this).css('color','#6E6E6E');
+    } 
+    else{
+      $$("#editArea").css('font-style','italic');
+      $$(this).css('color','black');
+    }      
+  });
+  
+  $$('#underl').on('click', function () {
+    if( $$("#editArea").css('text-decoration') == 'underline' ){
+      $$("#editArea").css('text-decoration','none');
+      $$(this).css('color','#6E6E6E');
+    } 
+    else{
+      $$("#editArea").css('text-decoration','underline');
+      $$(this).css('color','black');
+    }               
+  });
+
+  $$('#sizeText').on('click', function () {
+    if($$("#editArea").css('font-size') == '20px'){
+      $$("#editArea").css('font-size','25px');
+      $$(this).css('color','black');  
+    }else if($$("#editArea").css('font-size') == '25px'){
+      $$("#editArea").css('font-size','30px');
+      $$(this).css('color','black'); 
+    }
+    else if($$("#editArea").css('font-size') == '30px'){
+      $$("#editArea").css('font-size','15px');
+      $$(this).css('color','black'); 
+    }else{
+      $$("#editArea").css('font-size','20px');
+      $$(this).css('color','#6E6E6E'); 
+    }            
+  });
+});
+
+
+function guardarEdicionNota(nota_id){
+  var notas = JSON.parse( localStorage.getItem("notas") );
+
+  $$.each(notas, function(i, nota){
+    if(nota.id == nota_id){
+      nota.contenido = $$("#editArea").val();
+      nota.formato = $$("#editArea").attr('style');
+      return false;
+    }
+  });
+
+  localStorage.setItem('notas', JSON.stringify(notas) );
+
+  $$("#editArea").attr('readonly','');
+  $$("#divGuardar").hide();
+  $$("#hiddenToolbar").hide();
+  $$("#btnEditarNota").css('display','flex');
+}
 
 
 myApp.onPageInit('NuevopendienteMateria', function (page) {
@@ -155,460 +874,11 @@ var pickerInline = myApp.picker({
 
 
 
-
-
 myApp.onPageInit('pendientesMateria', function (page) {
     $$('#new_actividad').on('click', function () { 
    mainView.router.loadPage('formActPendiente.html');
 });
 });
-
-
-myApp.onPageInit('materias', function (page) {
-
-  if( localStorage.getItem('materias') ){
-    var materias = JSON.parse( localStorage.getItem('materias') );
-    for(var i=0; i < materias.length; i++){ 
-      $$('#listaMaterias ul').append(
-        "<li id='"+materias[i].id+"'>\
-          <div class='row no-gutter'>\
-            <div class='col-90'>\
-              <a href='#' onclick='cargarMateria("+materias[i].id+")' class='item-link item-content'>\
-                <div class='item-media'><i class='material-icons'>&#xE2C7;</i></div>\
-                <div class='item-inner'>\
-                  <div class='item-title-row'>\
-                    <div class='item-title'>"+materias[i].nombre+"</div>\
-                  </div>\
-                </div>\
-              </a>\
-            </div>\
-            <div class='col-10'>\
-              <a href='#' class='link icon-only item-inner options-popover'>\
-                <i class='material-icons'>&#xE5D4;</i>\
-              </a>\
-            </div>\
-          </div>\
-        </li>"
-      );
-    }
-  }
-
-  $$('#new_materia').on('click', function () {
-    myApp.modal({
-      text: '<p style="color:black;font-weight:bold; font-size: 115%" >Nueva Materia</p>',
-      afterText: '<input type="text" id="nuevaMat" class="modal-text-input" placeholder="Nombre" autofocus>',
-      buttons: [
-        {
-          text: 'CANCELAR',
-          onClick: function() { 
-          }
-        }, 
-        {
-          text: 'CREAR',
-          onClick: function() {
-            if( $$('#nuevaMat').val() ){
-              if( localStorage.getItem('materias') ){
-                var materias = JSON.parse( localStorage.getItem('materias') );
-              }
-              else{
-                var materias = [];
-              }
-
-              var newMateria = {
-                id: materias.length +1,
-                nombre: $$('#nuevaMat').val()
-              };
-
-              materias.push(newMateria);
-              localStorage.setItem('materias', JSON.stringify(materias) );
-              mainView.router.refreshPage();
-            }
-          }
-        }, 
-      ]
-    });
-
-    $$(".modal-button").filter(function() {
-        return $$(this).text() == "CREAR";
-    }).attr('disabled','');
-
-    $$("#nuevaMat").on('keyup', function(){
-      if( $$(this).val() ){
-        $$(".modal-button").filter(function() {
-            return $$(this).text() == "CREAR";
-        }).removeAttr('disabled');
-      }
-      else{
-        $$(".modal-button").filter(function() {
-            return $$(this).text() == "CREAR";
-        }).attr('disabled','');
-      }
-    });
-
-  });
-
-  $$('.options-popover').on('click', function () {
-    var materia_id = $$(this).parents('li').attr('id');
-    var materia_nom = $$(this).parents('li').find('div.item-title').text();
-
-    var popoverHTML = '<div class="popover">'+
-                        '<div class="popover-inner">'+
-                          '<div class="list-block">'+
-                            '<ul>'+
-                              '<li><a href="#" class="item-link list-button close-popover" onclick="editar_materia('+materia_id+',\''+materia_nom+'\')">Cambiar nombre</li>'+
-                              '<li><a href="#" class="item-link list-button close-popover" onclick="eliminar_materia('+materia_id+')">Eliminar</li>'+
-                            '</ul>'+
-                          '</div>'+
-                        '</div>'+
-                      '</div>';
-
-    myApp.popover(popoverHTML, this); 
-  });
-
-});
-
-
-function editar_materia(id, nombre){
-  myApp.modal({
-    text: '<p style="color:black;font-weight:bold; font-size: 115%" >Editar Materia</p>',
-    afterText: '<input id="inputEditar" type="text" class="modal-text-input" placeholder="Nombre" value="'+nombre+'" autofocus>',
-    buttons: [
-      {
-        text: 'CANCELAR',
-        onClick: function() { 
-        }
-      }, 
-      {
-        text: 'GUARDAR',
-        onClick: function() {
-          var materias = JSON.parse( localStorage.getItem('materias') );
-
-          $$.each(materias, function(i, materia){
-            if(materia.id == id){
-              materia.nombre = $$('#inputEditar').val();
-              return false;
-            }
-          });
-
-          localStorage.setItem('materias', JSON.stringify(materias) );
-          mainView.router.refreshPage();
-        }
-      }, 
-    ]
-  });
-
-  $$("#inputEditar").on('keyup', function(){
-    if( $$(this).val() ){
-      $$(".modal-button").filter(function() {
-          return $$(this).text() == "GUARDAR";
-      }).removeAttr('disabled');
-    }
-    else{
-      $$(".modal-button").filter(function() {
-          return $$(this).text() == "GUARDAR";
-      }).attr('disabled','');
-    }
-  });
-}
-
-
-function eliminar_materia(id){
-  myApp.modal({
-    text: '<p style="color:black;font-weight:bold; font-size: 115%" >Eliminar Materia</p>',
-    afterText: '<p>Se perderan todos los elementos de esta materia.</p>',
-    buttons: [
-      {
-        text: 'CANCELAR',
-        onClick: function() { 
-        }
-      }, 
-      {
-        text: 'ELIMINAR',
-        onClick: function() {
-          var materias = JSON.parse( localStorage.getItem('materias') );
-
-          $$.each(materias, function(index, materia){
-            if(materia.id == id){
-              materias.splice(index,1);
-              return false;
-            }
-          });
-
-          localStorage.setItem('materias', JSON.stringify(materias) );
-
-          if( localStorage.getItem('archivos') ){
-            var archivos = JSON.parse( localStorage.getItem('archivos') );
-
-            $$.each(archivos, function(index, archivo){
-              if(archivo.materia_id == id){
-                archivos.splice(index,1);
-              }
-            });
-
-            localStorage.setItem('archivos', JSON.stringify(archivos) );
-          }
-
-          mainView.router.refreshPage();
-        }
-      }, 
-    ]
-  });
-}
-
-
-function cargarMateria(id){
-  var materias = JSON.parse( localStorage.getItem('materias') );
-  var materia = {};
-
-  $$.each(materias, function(index, elemento){
-    if(elemento.id == id){
-      materia = elemento;
-      return false;
-    }
-  });
-
-  myApp.onPageInit('materia', function (page) {
-    $$("#divTitulo").text(materia.nombre);
-
-    if( localStorage.getItem('archivos') ){
-      var archivos = JSON.parse( localStorage.getItem('archivos') );
-
-      $$.each(archivos, function(index, archivo){ 
-
-        if(archivo.materia_id == materia.id){
-          var icono = '';
-
-          switch(archivo.tipo){
-            case 'nota':
-              icono = '&#xE06F;';
-              break;
-            case 'imagen':
-              icono = '&#xE410;';
-              break;
-            case 'audio':
-              icono = '&#xE3A1;';
-              break;
-            case 'video':
-              icono = '&#xE54D;';
-              break;
-            default:
-              icono = '&#xE24D;';
-              break;
-          }
-
-          $$('#listaArchivos ul').append(
-            "<li id='"+archivo.id+"'>\
-              <div class='row no-gutter'>\
-                <div class='col-90'>\
-                  <a href='#' class='item-link item-content'>\
-                    <div class='item-media'><i class='material-icons'>"+icono+"</i></div>\
-                    <div class='item-inner'>\
-                      <div class='item-title-row'>\
-                        <div class='item-title'>"+archivo.nombre+"</div>\
-                      </div>\
-                    </div>\
-                  </a>\
-                </div>\
-                <div class='col-10'>\
-                  <a href='#' class='link icon-only item-inner options-popover'>\
-                    <i class='material-icons'>&#xE5D4;</i>\
-                  </a>\
-                </div>\
-              </div>\
-            </li>"
-          );
-        }
-      });
-    }
-
-  });
-
-  mainView.router.loadPage('materia.html');
-}
-
-
-myApp.onPageInit('materia', function (page) {
-
-  $$('#newfolder').on('click', function () {
-    myApp.modal({
-      text: '<p style="color:black;font-weight:bold; font-size: 115%" >Nueva Carpeta</p>',
-      afterText: '<input type="text" id="nuevaCarpeta" class="modal-text-input" placeholder="Nombre de carpeta" autofocus>',
-      buttons: [
-        {
-          text: 'CANCELAR',
-          onClick: function() { 
-          }
-        }, 
-        {
-          text: 'CREAR',
-          onClick: function() {
-            var nombCarpeta=$$('#nuevaCarpeta').val();
-          }
-        }, 
-      ]
-    });
-  });
-
-
-  var destinationType=navigator.camera.DestinationType;
-
-  $$('#camara').on('click', function () {
-
-    navigator.camera.getPicture(onSuccess, onFail, {
-    quality: 50, saveToPhotoAlbum:1, correctOrientation: true,
-    destinationType: Camera.DestinationType.FILE_URI });
-
-    function onSuccess(imageURI) {
-      verIMG(imageURI);
-    }
-      
-
-    function onFail(message) {
-      alert('Error: ' + message);
-    }
-
-
-    function verIMG(imageURI){
-      var uri;
-      var name;
-      uri = imageURI.split('/');
-      name = uri[uri.length-1];
-     // $$('#campic').attr('src',imageURI);
-      var newPageContent = '<div  class="page" data-page="fotocam">' +
-                              '<div id="fot1" class="navbar">'+
-                                  '<div class="navbar-inner">'+
-                                    '<div class="left">'+
-                                      '<a href="materia.html" class="back link icon-only">'+
-                                        '<i class="icon icon-back"></i>'+
-                                      '</a>'+
-                                    '</div>'+
-                                    '<div style="font-size: 80%">'+name+'</div>'+
-                                    '<div class="right">'+
-                                       '<i class="material-icons">&#xE5D4;</i>'+
-                                      
-                                    '</div>'+
-                                  '</div>'+           
-                                '</div>'+
-                              '<div id="fot2" class="page-content"> ' +
-                                '<div class="content-block">' +
-                                  '<div class="content-block-inner">' +
-                                    '<p>' +
-                                      '<br>' +
-                                      '<img id="campic" src='+imageURI+' width="100%" height="200%">' +
-                                    '</p>' +
-                                  '</div>' +
-                                '</div>' +
-                              '</div>' +
-                          '</div>';
-      
-       mainView.router.loadContent(newPageContent);
-          
-    }
-
-  });
-
-
-
-});
-
-
-
-
-myApp.onPageInit('editor', function (page) {
-
-  $$('#saveNote').on('click', function () {
-    myApp.modal({
-      text: '<p style="color:black;font-weight:bold; font-size: 115%" >Guardar Nota</p>',
-      afterText: '<input type="text" id="guardaNota" class="modal-text-input" placeholder="Nombre de nota" autofocus>',
-      buttons: [
-        {
-          text: 'Cancelar',
-          onClick: function() { 
-          }
-        }, 
-        {
-          text: 'Guardar',
-          onClick: function() {
-            var nombNota=$$('#guardaNota').val();
-
-          }
-        }, 
-      ]
-    });
-  });
-
-
-
-    $$('#bold').on('click', function () {
-        var ic = document.getElementById('bold');
-        var el = document.getElementById('newnote');
-          if(el.style.fontWeight == 'normal'){
-                ic.style.color='black';
-              el.style.fontWeight = 'bold';  
-          }else{
-                ic.style.color='#6E6E6E';
-              el.style.fontWeight = 'normal';  
-          }
-        
-  });
-
-
-   $$('#italic').on('click', function () {
-        var ic = document.getElementById('italic');
-        var el = document.getElementById('newnote');
-          if(el.style.fontStyle== 'normal'){
-                 ic.style.color='black';
-              el.style.fontStyle= 'italic';
-          }else{
-                ic.style.color='#6E6E6E';
-              el.style.fontStyle= 'normal';
-          }
-              
-  });
-  
-
-   $$('#underl').on('click', function () {
-        var ic = document.getElementById('underl');
-        var el = document.getElementById('newnote');
-          if(el.style.textDecoration == 'none'){
-             ic.style.color='black';
-            el.style.textDecoration = 'underline'; 
-          }else{
-            ic.style.color='#6E6E6E';
-            el.style.textDecoration = 'none'; 
-          }
-            
-  });
-
-  $$('#sizeText').on('click', function () {
-       var ic = document.getElementById('sizeText');
-        var el = document.getElementById('newnote');
-
-            if(el.style.fontSize == '20px'){
-              ic.style.color='black';
-              el.style.fontSize = '25px';   
-            }else if(el.style.fontSize == '25px'){
-              ic.style.color='black';
-              el.style.fontSize = '30px';
-
-            }
-            else if(el.style.fontSize == '30px'){
-              ic.style.color='black';
-              el.style.fontSize = '15px';
-      }else{
-        el.style.fontSize = '20px';
-        ic.style.color='#6E6E6E';
-      }
-
-
-           
-  });
-
-
-
-});
-
-
 
 
 
