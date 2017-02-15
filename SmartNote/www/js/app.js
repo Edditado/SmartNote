@@ -100,19 +100,9 @@ myApp.onPageInit('materias', function (page) {
   });
 
 
-    
-   /*plugin.notification.local.promptForPermission(function (granted) {
-    alert("promptForPermission: "+granted);
-    notif();
-  });
+  
 
-  plugin.notification.local.hasPermission(function (granted) {
-    alert("hasPermission: "+granted);
-    notif();
-  });
-*/
 
-$$(document).on('deviceready', function() {
 
   $$('.materia-options').on('click', function () {
     var materia_id = $$(this).parents('li').attr('id');
@@ -838,10 +828,10 @@ myApp.onPageInit('NuevopendienteMateria', function (page) {
 
 
                                   
-        mainView.router.loadPage('pendientesMat.html');
-    });
-});
-   
+                mainView.router.loadPage('pendientesMat.html');
+            });
+        });
+           
   
 
 
@@ -962,72 +952,6 @@ myApp.onPageInit('links', function (page) {
 
 
 
-myApp.onPageInit('materia', function (page) {
-
-    var destinationType=navigator.camera.DestinationType;
-    
-                        
-         
-      $$('#camara').on('click', function () {
-
-                 navigator.camera.getPicture(onSuccess, onFail, {
-                 quality: 50, saveToPhotoAlbum:1, correctOrientation: true,
-                 destinationType: Camera.DestinationType.FILE_URI });
-
-                  function onSuccess(imageURI) {
-                        
-                        verIMG(imageURI);
-                 }
-                  
-
-                  function onFail(message) {
-                       alert('Error: ' + message);
-                  }
-
-
-                  function verIMG(imageURI){
-                        var uri;
-                        var name;
-                        uri = imageURI.split('/');
-                        name = uri[uri.length-1];
-                       // $$('#campic').attr('src',imageURI);
-                        var newPageContent = '<div  class="page" data-page="fotocam">' +
-                                                '<div id="fot1" class="navbar">'+
-                                                    '<div class="navbar-inner">'+
-                                                      '<div class="left">'+
-                                                        '<a href="materia.html" class="back link icon-only">'+
-                                                          '<i class="icon icon-back"></i>'+
-                                                        '</a>'+
-                                                      '</div>'+
-                                                      '<div style="font-size: 80%">'+name+'</div>'+
-                                                      '<div class="right">'+
-                                                         '<i class="material-icons">&#xE5D4;</i>'+
-                                                        
-                                                      '</div>'+
-                                                    '</div>'+           
-                                                  '</div>'+
-                                                '<div id="fot2" class="page-content"> ' +
-                                                  '<div class="content-block">' +
-                                                    '<div class="content-block-inner">' +
-                                                      '<p>' +
-                                                        '<br>' +
-                                                        '<img id="campic" src='+imageURI+' width="100%" height="200%">' +
-                                                      '</p>' +
-                                                    '</div>' +
-                                                  '</div>' +
-                                                '</div>' +
-                                            '</div>';
-                        
-                         mainView.router.loadContent(newPageContent);
-                        
-                  }
-
-          
-
-             });
-           
-
-});
 
 
 
